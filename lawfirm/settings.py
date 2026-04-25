@@ -130,7 +130,3 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.up.railway.app',
 ]
 
-MIDDLEWARE = [
-    ...
-    'apps.users.user_activity_middleware.UserActivityMiddleware',  # أضفه آخر واحد
-]
