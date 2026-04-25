@@ -1,0 +1,842 @@
+/* ================================================================
+   DARK THEME — Professional SaaS Dashboard
+   ملف: dark-theme.css
+   الاستخدام: أضف data-theme="dark" على <html> أو <body>
+================================================================ */
+
+/* ================================================================
+   1. CSS VARIABLES — Light (default) + Dark
+================================================================ */
+
+:root {
+    /* ── Palette ── */
+    --primary:           #6366F1;
+    --primary-dark:      #4F46E5;
+    --primary-light:     rgba(99, 102, 241, 0.15);
+    --primary-glow:      rgba(99, 102, 241, 0.35);
+
+    --accent:            #8B5CF6;
+    --accent-light:      rgba(139, 92, 246, 0.15);
+
+    --success:           #10B981;
+    --success-bg:        rgba(16, 185, 129, 0.12);
+    --success-text:      #34D399;
+
+    --warning:           #F59E0B;
+    --warning-bg:        rgba(245, 158, 11, 0.12);
+    --warning-text:      #FCD34D;
+
+    --danger:            #EF4444;
+    --danger-bg:         rgba(239, 68, 68, 0.12);
+    --danger-text:       #FCA5A5;
+
+    --info:              #38BDF8;
+    --info-bg:           rgba(56, 189, 248, 0.12);
+    --info-text:         #7DD3FC;
+
+    /* ── Backgrounds ── */
+    --bg-main:           #0B0F19;
+    --bg-card:           #111827;
+    --bg-elevated:       #161D2E;
+    --bg-input:          #0F1623;
+    --bg-sidebar:        #0D1117;
+    --bg-navbar:         #111827;
+    --bg-hover:          rgba(99, 102, 241, 0.07);
+    --bg-active:         rgba(99, 102, 241, 0.15);
+    --bg-overlay:        rgba(0, 0, 0, 0.7);
+
+    /* ── Borders ── */
+    --border:            #1F2937;
+    --border-light:      rgba(255, 255, 255, 0.05);
+    --border-focus:      #6366F1;
+
+    /* ── Text ── */
+    --text-primary:      #E5E7EB;
+    --text-secondary:    #9CA3AF;
+    --text-muted:        #6B7280;
+    --text-faint:        #374151;
+    --text-inverse:      #0B0F19;
+
+    /* ── Shadows ── */
+    --shadow-sm:         0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+    --shadow-md:         0 4px 16px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.25);
+    --shadow-lg:         0 10px 40px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3);
+    --shadow-primary:    0 4px 20px rgba(99, 102, 241, 0.3);
+
+    /* ── Scrollbar ── */
+    --scrollbar-track:   #111827;
+    --scrollbar-thumb:   #1F2937;
+
+    /* ── Transition ── */
+    --transition:        all 0.3s ease;
+    --transition-fast:   all 0.15s ease;
+
+    /* ── Radius ── */
+    --radius-sm:         6px;
+    --radius-md:         10px;
+    --radius-lg:         14px;
+    --radius-xl:         18px;
+}
+
+/* ================================================================
+   2. LIGHT THEME OVERRIDES (النسخة الفاتحة)
+================================================================ */
+[data-theme="light"] {
+    --primary:           #4F46E5;
+    --primary-dark:      #3730A3;
+    --primary-light:     rgba(79, 70, 229, 0.1);
+    --primary-glow:      rgba(79, 70, 229, 0.25);
+
+    --success-text:      #059669;
+    --warning-text:      #D97706;
+    --danger-text:       #DC2626;
+    --info-text:         #0284C7;
+
+    --bg-main:           #F1F5F9;
+    --bg-card:           #FFFFFF;
+    --bg-elevated:       #F8FAFC;
+    --bg-input:          #F8FAFC;
+    --bg-sidebar:        #0D1117;
+    --bg-navbar:         #FFFFFF;
+    --bg-hover:          rgba(79, 70, 229, 0.06);
+    --bg-active:         rgba(79, 70, 229, 0.1);
+    --bg-overlay:        rgba(15, 23, 42, 0.5);
+
+    --border:            #E2E8F0;
+    --border-light:      rgba(0, 0, 0, 0.05);
+
+    --text-primary:      #0F172A;
+    --text-secondary:    #475569;
+    --text-muted:        #64748B;
+    --text-faint:        #94A3B8;
+
+    --shadow-sm:         0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md:         0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
+    --shadow-lg:         0 10px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.07);
+
+    --scrollbar-track:   #F1F5F9;
+    --scrollbar-thumb:   #CBD5E1;
+
+    --success-bg:        rgba(5, 150, 105, 0.1);
+    --warning-bg:        rgba(217, 119, 6, 0.1);
+    --danger-bg:         rgba(220, 38, 38, 0.1);
+    --info-bg:           rgba(2, 132, 199, 0.1);
+}
+
+/* ================================================================
+   3. BASE — BODY & HTML
+================================================================ */
+
+html {
+    scroll-behavior: smooth;
+}
+
+body,
+[data-theme="dark"] body {
+    background-color: var(--bg-main) !important;
+    color: var(--text-primary) !important;
+    transition: var(--transition);
+    font-size: 14.5px;
+    line-height: 1.6;
+}
+
+/* Subtle radial gradient for depth */
+[data-theme="dark"] body {
+    background:
+        radial-gradient(ellipse 60% 40% at 80% -10%, rgba(99,102,241,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 35% at 10% 110%,  rgba(139,92,246,0.05) 0%, transparent 60%),
+        var(--bg-main) !important;
+}
+
+/* ================================================================
+   4. SCROLLBAR
+================================================================ */
+
+::-webkit-scrollbar               { width: 6px; height: 6px; }
+::-webkit-scrollbar-track         { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb         { background: var(--scrollbar-thumb); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover   { background: var(--primary); }
+
+/* ================================================================
+   5. NAVBAR
+================================================================ */
+
+[data-theme="dark"] .navbar,
+[data-theme="dark"] .topbar,
+[data-theme="dark"] nav.navbar {
+    background: var(--bg-navbar) !important;
+    border-bottom: 1px solid var(--border) !important;
+    box-shadow: 0 1px 0 var(--border), 0 4px 16px rgba(0,0,0,0.2) !important;
+    transition: var(--transition);
+}
+
+[data-theme="dark"] .navbar-brand,
+[data-theme="dark"] .navbar-brand span,
+[data-theme="dark"] .navbar .nav-link,
+[data-theme="dark"] .navbar .topbar-title {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .navbar .nav-link:hover    { color: var(--primary) !important; }
+[data-theme="dark"] .navbar .nav-link.active   { color: var(--primary) !important; }
+[data-theme="dark"] .navbar-toggler-icon {
+    filter: invert(1);
+}
+
+/* ================================================================
+   6. SIDEBAR
+================================================================ */
+
+[data-theme="dark"] #sidebar,
+[data-theme="dark"] .sidebar,
+[data-theme="dark"] aside {
+    background: linear-gradient(180deg, #0D1117 0%, #0B0F19 100%) !important;
+    border-color: var(--border) !important;
+    border-right-color: var(--border) !important;
+    border-left-color: var(--border) !important;
+    transition: var(--transition);
+}
+
+[data-theme="dark"] .sidebar .nav-link,
+[data-theme="dark"] #sidebar .nav-link,
+[data-theme="dark"] aside .nav-link {
+    color: var(--text-secondary) !important;
+    border-radius: var(--radius-md);
+    transition: var(--transition-fast);
+    margin-bottom: 2px;
+}
+
+[data-theme="dark"] .sidebar .nav-link:hover,
+[data-theme="dark"] #sidebar .nav-link:hover,
+[data-theme="dark"] aside .nav-link:hover {
+    background: var(--bg-hover) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .sidebar .nav-link.active,
+[data-theme="dark"] #sidebar .nav-link.active,
+[data-theme="dark"] aside .nav-link.active {
+    background: var(--bg-active) !important;
+    color: #A5B4FC !important;
+    font-weight: 600;
+}
+
+[data-theme="dark"] .sidebar-brand-title,
+[data-theme="dark"] #sidebar .brand-text {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .sidebar-label,
+[data-theme="dark"] .nav-section-label {
+    color: var(--text-faint) !important;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* ================================================================
+   7. CARDS
+================================================================ */
+
+[data-theme="dark"] .card {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-sm) !important;
+    border-radius: var(--radius-lg);
+    transition: var(--transition);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .card:hover {
+    border-color: rgba(99, 102, 241, 0.25) !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+[data-theme="dark"] .card-header {
+    background: var(--bg-card) !important;
+    border-bottom: 1px solid var(--border) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .card-footer {
+    background: var(--bg-card) !important;
+    border-top: 1px solid var(--border) !important;
+    color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .card-title  { color: var(--text-primary) !important; }
+[data-theme="dark"] .card-text   { color: var(--text-secondary) !important; }
+[data-theme="dark"] .card-body   { color: var(--text-secondary) !important; }
+
+/* ── Stat Cards / Mini Cards ── */
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .mini-card,
+[data-theme="dark"] .info-card {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
+    transition: var(--transition);
+}
+
+[data-theme="dark"] .stat-card:hover,
+[data-theme="dark"] .mini-card:hover {
+    background: var(--bg-elevated) !important;
+    border-color: rgba(99, 102, 241, 0.3) !important;
+    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.1) !important;
+    transform: translateY(-2px);
+}
+
+/* ================================================================
+   8. TABLES — FULL OVERRIDE (حل مشكلة الخلفية البيضاء)
+================================================================ */
+
+[data-theme="dark"] .table,
+[data-theme="dark"] table {
+    --bs-table-bg:              var(--bg-card) !important;
+    --bs-table-striped-bg:      rgba(255,255,255,0.02) !important;
+    --bs-table-hover-bg:        rgba(99,102,241,0.06) !important;
+    --bs-table-active-bg:       rgba(99,102,241,0.1) !important;
+    --bs-table-border-color:    var(--border) !important;
+    --bs-table-color:           var(--text-secondary) !important;
+    color: var(--text-secondary) !important;
+    border-color: var(--border) !important;
+    transition: var(--transition);
+}
+
+/* Header */
+[data-theme="dark"] .table thead th,
+[data-theme="dark"] .table > thead > tr > th,
+[data-theme="dark"] table thead th {
+    background: #0F1623 !important;
+    color: var(--text-muted) !important;
+    border-bottom: 1px solid var(--border) !important;
+    border-color: var(--border) !important;
+    font-weight: 700;
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 12px 14px;
+}
+
+/* Rows */
+[data-theme="dark"] .table tbody td,
+[data-theme="dark"] .table > tbody > tr > td,
+[data-theme="dark"] table tbody td {
+    background-color: var(--bg-card) !important;
+    color: var(--text-secondary) !important;
+    border-bottom: 1px solid #1A2332 !important;
+    border-color: #1A2332 !important;
+    padding: 12px 14px;
+    vertical-align: middle;
+    transition: var(--transition-fast);
+}
+
+/* Hover */
+[data-theme="dark"] .table tbody tr:hover td,
+[data-theme="dark"] .table-hover tbody tr:hover td,
+[data-theme="dark"] table tbody tr:hover td {
+    background-color: rgba(99, 102, 241, 0.05) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Last row no border */
+[data-theme="dark"] .table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* Bootstrap table variants — override all */
+[data-theme="dark"] .table-light,
+[data-theme="dark"] .table-light > th,
+[data-theme="dark"] .table-light > td,
+[data-theme="dark"] .table thead.table-light th {
+    background: #0F1623 !important;
+    color: var(--text-muted) !important;
+    border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > td {
+    background-color: rgba(255,255,255,0.02) !important;
+}
+
+[data-theme="dark"] .table-bordered,
+[data-theme="dark"] .table-bordered td,
+[data-theme="dark"] .table-bordered th {
+    border-color: var(--border) !important;
+}
+
+/* Table wrapper */
+[data-theme="dark"] .table-responsive {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+[data-theme="dark"] .table-wrapper {
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+/* ================================================================
+   9. BUTTONS
+================================================================ */
+
+/* Primary */
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .btn.btn-primary {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 8px var(--primary-glow);
+    transition: var(--transition);
+}
+[data-theme="dark"] .btn-primary:hover,
+[data-theme="dark"] .btn-primary:focus {
+    background: var(--primary-dark) !important;
+    border-color: var(--primary-dark) !important;
+    box-shadow: 0 4px 16px var(--primary-glow);
+    transform: translateY(-1px);
+}
+
+/* Secondary */
+[data-theme="dark"] .btn-secondary,
+[data-theme="dark"] .btn.btn-secondary {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: var(--border) !important;
+    color: var(--text-secondary) !important;
+    transition: var(--transition);
+}
+[data-theme="dark"] .btn-secondary:hover {
+    background: rgba(255,255,255,0.1) !important;
+    border-color: rgba(255,255,255,0.15) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Outline Primary */
+[data-theme="dark"] .btn-outline-primary {
+    background: transparent !important;
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+    transition: var(--transition);
+}
+[data-theme="dark"] .btn-outline-primary:hover {
+    background: var(--primary) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+/* Outline Secondary */
+[data-theme="dark"] .btn-outline-secondary {
+    background: transparent !important;
+    border-color: var(--border) !important;
+    color: var(--text-secondary) !important;
+    transition: var(--transition);
+}
+[data-theme="dark"] .btn-outline-secondary:hover {
+    background: rgba(255,255,255,0.05) !important;
+    border-color: rgba(255,255,255,0.2) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Light */
+[data-theme="dark"] .btn-light {
+    background: rgba(255,255,255,0.05) !important;
+    border-color: var(--border) !important;
+    color: var(--text-secondary) !important;
+    transition: var(--transition);
+}
+[data-theme="dark"] .btn-light:hover {
+    background: rgba(99,102,241,0.1) !important;
+    border-color: rgba(99,102,241,0.4) !important;
+    color: #A5B4FC !important;
+}
+
+/* Success / Danger / Warning */
+[data-theme="dark"] .btn-success { background: var(--success) !important; border-color: var(--success) !important; color: #fff !important; }
+[data-theme="dark"] .btn-danger  { background: var(--danger)  !important; border-color: var(--danger)  !important; color: #fff !important; }
+[data-theme="dark"] .btn-warning { background: var(--warning) !important; border-color: var(--warning) !important; color: #fff !important; }
+[data-theme="dark"] .btn-info    { background: var(--info)    !important; border-color: var(--info)    !important; color: #fff !important; }
+
+[data-theme="dark"] .btn-success:hover { filter: brightness(1.1); transform: translateY(-1px); }
+[data-theme="dark"] .btn-danger:hover  { filter: brightness(1.1); transform: translateY(-1px); }
+[data-theme="dark"] .btn-warning:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+/* ================================================================
+   10. INPUTS / FORMS / SEARCH
+================================================================ */
+
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select,
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] input[type="email"],
+[data-theme="dark"] input[type="password"],
+[data-theme="dark"] input[type="number"],
+[data-theme="dark"] input[type="search"],
+[data-theme="dark"] input[type="tel"],
+[data-theme="dark"] input[type="url"],
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+    background: var(--bg-input) !important;
+    border: 1.5px solid var(--border) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+}
+
+[data-theme="dark"] .form-control::placeholder,
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+    color: var(--text-faint) !important;
+}
+
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-select:focus,
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus,
+[data-theme="dark"] select:focus {
+    background: var(--bg-input) !important;
+    border-color: var(--border-focus) !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+    color: var(--text-primary) !important;
+    outline: none;
+}
+
+/* Disabled */
+[data-theme="dark"] .form-control:disabled,
+[data-theme="dark"] .form-select:disabled,
+[data-theme="dark"] input:disabled {
+    background: rgba(255,255,255,0.03) !important;
+    color: var(--text-faint) !important;
+    cursor: not-allowed;
+}
+
+/* Form Label */
+[data-theme="dark"] .form-label,
+[data-theme="dark"] label {
+    color: var(--text-primary) !important;
+    font-weight: 600;
+}
+
+[data-theme="dark"] .form-text { color: var(--text-muted) !important; }
+
+/* Input Group */
+[data-theme="dark"] .input-group-text {
+    background: var(--bg-elevated) !important;
+    border-color: var(--border) !important;
+    color: var(--text-secondary) !important;
+}
+
+/* Search fields */
+[data-theme="dark"] .search-bar input,
+[data-theme="dark"] .search-input,
+[data-theme="dark"] input[type="search"] {
+    background: var(--bg-input) !important;
+    border-color: var(--border) !important;
+    color: var(--text-primary) !important;
+}
+[data-theme="dark"] .search-bar input:focus,
+[data-theme="dark"] .search-input:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.15) !important;
+}
+
+/* ================================================================
+   11. MODALS
+================================================================ */
+
+[data-theme="dark"] .modal-content {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-lg) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius-xl);
+}
+
+[data-theme="dark"] .modal-header {
+    background: var(--bg-card) !important;
+    border-bottom: 1px solid var(--border) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .modal-body {
+    background: var(--bg-card) !important;
+    color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .modal-footer {
+    background: var(--bg-card) !important;
+    border-top: 1px solid var(--border) !important;
+}
+
+[data-theme="dark"] .modal-title { color: var(--text-primary) !important; }
+
+[data-theme="dark"] .btn-close {
+    filter: invert(1) grayscale(1) brightness(1.5);
+}
+
+[data-theme="dark"] .modal-backdrop {
+    background: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* ================================================================
+   12. DROPDOWNS
+================================================================ */
+
+[data-theme="dark"] .dropdown-menu {
+    background: var(--bg-elevated) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-lg) !important;
+    border-radius: var(--radius-lg);
+    padding: 6px;
+}
+
+[data-theme="dark"] .dropdown-item {
+    color: var(--text-secondary) !important;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+    padding: 8px 12px;
+}
+
+[data-theme="dark"] .dropdown-item:hover,
+[data-theme="dark"] .dropdown-item:focus {
+    background: var(--bg-hover) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .dropdown-item.active {
+    background: var(--bg-active) !important;
+    color: #A5B4FC !important;
+}
+
+[data-theme="dark"] .dropdown-divider {
+    border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .dropdown-header {
+    color: var(--text-muted) !important;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+/* ================================================================
+   13. BADGES
+================================================================ */
+
+[data-theme="dark"] .badge.bg-light,
+[data-theme="dark"] .badge.text-dark {
+    background: rgba(255,255,255,0.08) !important;
+    color: var(--text-secondary) !important;
+}
+[data-theme="dark"] .badge.bg-primary   { background: var(--primary-light)  !important; color: #A5B4FC !important; }
+[data-theme="dark"] .badge.bg-success   { background: var(--success-bg)     !important; color: var(--success-text) !important; }
+[data-theme="dark"] .badge.bg-danger    { background: var(--danger-bg)      !important; color: var(--danger-text) !important; }
+[data-theme="dark"] .badge.bg-warning   { background: var(--warning-bg)     !important; color: var(--warning-text) !important; }
+[data-theme="dark"] .badge.bg-info      { background: var(--info-bg)        !important; color: var(--info-text) !important; }
+[data-theme="dark"] .badge.bg-secondary { background: rgba(255,255,255,0.06) !important; color: var(--text-secondary) !important; }
+
+/* ================================================================
+   14. ALERTS
+================================================================ */
+
+[data-theme="dark"] .alert             { border: none !important; border-radius: var(--radius-md); }
+[data-theme="dark"] .alert-success     { background: var(--success-bg) !important; color: var(--success-text) !important; }
+[data-theme="dark"] .alert-danger,
+[data-theme="dark"] .alert-error       { background: var(--danger-bg)  !important; color: var(--danger-text)  !important; }
+[data-theme="dark"] .alert-warning     { background: var(--warning-bg) !important; color: var(--warning-text) !important; }
+[data-theme="dark"] .alert-info        { background: var(--info-bg)    !important; color: var(--info-text)    !important; }
+[data-theme="dark"] .alert-primary     { background: var(--primary-light) !important; color: #A5B4FC !important; }
+[data-theme="dark"] .alert-secondary   { background: rgba(255,255,255,0.05) !important; color: var(--text-secondary) !important; }
+
+/* ================================================================
+   15. LIST GROUPS
+================================================================ */
+
+[data-theme="dark"] .list-group-item {
+    background: var(--bg-card) !important;
+    border-color: var(--border) !important;
+    color: var(--text-secondary) !important;
+    transition: var(--transition-fast);
+}
+
+[data-theme="dark"] .list-group-item:hover {
+    background: var(--bg-hover) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .list-group-item.active {
+    background: var(--bg-active) !important;
+    border-color: var(--primary) !important;
+    color: #A5B4FC !important;
+}
+
+/* ================================================================
+   16. PAGINATION
+================================================================ */
+
+[data-theme="dark"] .page-link {
+    background: var(--bg-card) !important;
+    border-color: var(--border) !important;
+    color: var(--text-secondary) !important;
+    transition: var(--transition-fast);
+}
+[data-theme="dark"] .page-link:hover {
+    background: var(--bg-hover) !important;
+    color: var(--primary) !important;
+}
+[data-theme="dark"] .page-item.active .page-link {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 8px var(--primary-glow);
+}
+[data-theme="dark"] .page-item.disabled .page-link {
+    background: var(--bg-card) !important;
+    color: var(--text-faint) !important;
+}
+
+/* ================================================================
+   17. TABS / PILLS
+================================================================ */
+
+[data-theme="dark"] .nav-tabs             { border-bottom-color: var(--border) !important; }
+[data-theme="dark"] .nav-tabs .nav-link   { color: var(--text-muted) !important; border-color: transparent !important; transition: var(--transition-fast); }
+[data-theme="dark"] .nav-tabs .nav-link:hover { color: var(--text-primary) !important; border-color: var(--border) !important; background: var(--bg-hover) !important; }
+[data-theme="dark"] .nav-tabs .nav-link.active {
+    background: var(--bg-card) !important;
+    border-color: var(--border) !important;
+    border-bottom-color: var(--bg-card) !important;
+    color: var(--primary) !important;
+}
+[data-theme="dark"] .nav-pills .nav-link        { color: var(--text-muted) !important; transition: var(--transition-fast); }
+[data-theme="dark"] .nav-pills .nav-link:hover  { background: var(--bg-hover) !important; color: var(--text-primary) !important; }
+[data-theme="dark"] .nav-pills .nav-link.active { background: var(--bg-active) !important; color: #A5B4FC !important; }
+
+/* ================================================================
+   18. PROGRESS BARS
+================================================================ */
+
+[data-theme="dark"] .progress {
+    background: rgba(255,255,255,0.06) !important;
+    border-radius: 99px;
+    height: 8px;
+}
+[data-theme="dark"] .progress-bar { background: var(--primary) !important; border-radius: 99px; }
+
+/* ================================================================
+   19. TOOLTIPS & POPOVERS
+================================================================ */
+
+[data-theme="dark"] .tooltip .tooltip-inner {
+    background: var(--bg-elevated) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border);
+}
+[data-theme="dark"] .popover {
+    background: var(--bg-elevated) !important;
+    border-color: var(--border) !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+[data-theme="dark"] .popover-header {
+    background: var(--bg-card) !important;
+    border-bottom-color: var(--border) !important;
+    color: var(--text-primary) !important;
+}
+[data-theme="dark"] .popover-body { color: var(--text-secondary) !important; }
+
+/* ================================================================
+   20. UTILITY OVERRIDES — bg-white, bg-light, text-dark
+================================================================ */
+
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] .bg-light  { background: var(--bg-card) !important; }
+[data-theme="dark"] .bg-dark   { background: var(--bg-elevated) !important; }
+[data-theme="dark"] .bg-body   { background: var(--bg-main) !important; }
+
+[data-theme="dark"] .text-dark  { color: var(--text-primary) !important; }
+[data-theme="dark"] .text-muted { color: var(--text-muted) !important; }
+[data-theme="dark"] .text-body  { color: var(--text-secondary) !important; }
+
+[data-theme="dark"] .border       { border-color: var(--border) !important; }
+[data-theme="dark"] .border-top   { border-top-color: var(--border) !important; }
+[data-theme="dark"] .border-bottom{ border-bottom-color: var(--border) !important; }
+[data-theme="dark"] .border-start { border-left-color: var(--border) !important; }
+[data-theme="dark"] .border-end   { border-right-color: var(--border) !important; }
+
+[data-theme="dark"] hr { border-color: var(--border) !important; opacity: 1; }
+
+/* ================================================================
+   21. SMOOTH TRANSITION ON ALL MAIN ELEMENTS
+================================================================ */
+
+[data-theme="dark"] *,
+[data-theme="light"] * {
+    transition:
+        background-color 0.3s ease,
+        border-color     0.3s ease,
+        color            0.3s ease,
+        box-shadow       0.3s ease;
+}
+
+/* Except animations-sensitive elements */
+[data-theme="dark"] button,
+[data-theme="dark"] a,
+[data-theme="dark"] .btn {
+    transition: var(--transition) !important;
+}
+
+/* ================================================================
+   22. HEADINGS & GENERAL TEXT
+================================================================ */
+
+[data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3,
+[data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] h6 {
+    color: var(--text-primary) !important;
+}
+[data-theme="dark"] p           { color: var(--text-secondary); }
+[data-theme="dark"] small       { color: var(--text-muted) !important; }
+[data-theme="dark"] a           { color: var(--primary); }
+[data-theme="dark"] a:hover     { color: var(--accent); }
+[data-theme="dark"] .text-white { color: var(--text-primary) !important; }
+
+/* ================================================================
+   23. OFFCANVAS & ACCORDION
+================================================================ */
+
+[data-theme="dark"] .offcanvas {
+    background: var(--bg-card) !important;
+    border-color: var(--border) !important;
+    color: var(--text-primary) !important;
+}
+[data-theme="dark"] .offcanvas-header { border-bottom-color: var(--border) !important; }
+
+[data-theme="dark"] .accordion-item     { background: var(--bg-card) !important; border-color: var(--border) !important; }
+[data-theme="dark"] .accordion-button   { background: var(--bg-card) !important; color: var(--text-primary) !important; }
+[data-theme="dark"] .accordion-button:not(.collapsed) { background: var(--bg-hover) !important; color: var(--primary) !important; box-shadow: none; }
+[data-theme="dark"] .accordion-button::after { filter: invert(1); }
+[data-theme="dark"] .accordion-body     { background: var(--bg-card) !important; color: var(--text-secondary) !important; }
+
+/* ================================================================
+   24. THEME TOGGLE BUTTON (اختياري — إذا أضفته)
+================================================================ */
+
+.theme-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    border-radius: 99px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.theme-toggle-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+.theme-toggle-btn .icon { font-size: 15px; }
