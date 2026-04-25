@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn lawfirm.wsgi:application --bind 0.0.0.0:$PORT",
+   "startCommand": "python manage.py migrate && python manage.py create_developer && python manage.py collectstatic --noinput && gunicorn lawfirm.wsgi:application --bind 0.0.0.0:$PORT",
     "healthcheckPath": "/users/login/",
     "healthcheckTimeout": 120,
     "restartPolicyType": "ON_FAILURE",
