@@ -1,18 +1,17 @@
 """
-إعدادات مشروع نظام إدارة مكتب المحاماة
+إعدادات مشروع نظام إدارة مكتب المحاماة (Production - Railway)
 """
 from pathlib import Path
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-lawfirm-secret-key-change-in-production-2024'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-me')
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = [
-    "lawfirm-production-0fad.up.railway.app"
-]
+ALLOWED_HOSTS = ['*']
+
 # التطبيقات المثبتة
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -21,6 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     # تطبيقات النظام
     'apps.users',
     'apps.companies',
@@ -30,6 +30,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # مهم للـ static
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -51,6 +52,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.users.context_processors.notifications',
             ],
         },
     },
@@ -58,7 +60,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'lawfirm.wsgi.application'
 
-# قاعدة البيانات - SQLite للتطوير
+# قاعدة البيانات
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -72,7 +74,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
 ]
 
-# نموذج المستخدم المخصص
+# نموذج المستخدم
 AUTH_USER_MODEL = 'users.CustomUser'
 
 # الإعدادات الإقليمية
@@ -81,26 +83,33 @@ TIME_ZONE = 'Asia/Riyadh'
 USE_I18N = True
 USE_TZ = True
 
-# الملفات الثابتة
+# ================== STATIC FILES ==================
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# ملفات الوسائط (المرفوعة)
+# مهم جدًا
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# ================== MEDIA FILES ==================
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# إعادة التوجيه بعد تسجيل الدخول
+# تسجيل الدخول
 LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/users/login/'
 
-# أنواع الملفات المسموح برفعها
+# رفع الملفات
 ALLOWED_UPLOAD_EXTENSIONS = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png', '.gif']
-MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10 ميجابايت
+MAX_UPLOAD_SIZE = 10 * 1024 * 1024
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://lawfirm-production-0fad.up.railway.app"
-]
+# ================== SECURITY ==================
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+
+# ================== WHITENOISE ==================
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
