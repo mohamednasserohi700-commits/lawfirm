@@ -6,9 +6,9 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-me')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-me-in-production')
 
-DEBUG = False
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -30,7 +30,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # مهم للـ static
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -60,13 +60,28 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'lawfirm.wsgi.application'
 
-# قاعدة البيانات
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# قاعدة البيانات - PostgreSQL على Railway أو SQLite محلياً
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    import urllib.parse
+    url = urllib.parse.urlparse(DATABASE_URL)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': url.path[1:],
+            'USER': url.username,
+            'PASSWORD': url.password,
+            'HOST': url.hostname,
+            'PORT': url.port,
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # التحقق من كلمة المرور
 AUTH_PASSWORD_VALIDATORS = [
@@ -87,8 +102,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# مهم جدًا
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ================== MEDIA FILES ==================
@@ -110,6 +123,3 @@ MAX_UPLOAD_SIZE = 10 * 1024 * 1024
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
-
-# ================== WHITENOISE ==================
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
