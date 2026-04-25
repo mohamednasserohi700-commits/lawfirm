@@ -1,0 +1,11 @@
+{
+  "build": {
+    "commands": [
+      "pip install -r requirements.txt",
+      "python manage.py collectstatic --noinput"
+    ]
+  },
+  "deploy": {
+    "startCommand": "gunicorn lawfirm.wsgi:application --bind 0.0.0.0:8080"
+  }
+}
