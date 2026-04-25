@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}المستندات{% endblock %}
+{% block page_title %}المستندات{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1><i class="fas fa-folder-open text-primary me-2"></i>جميع المستندات</h1>
+        <div class="breadcrumb mt-1">
+            <a href="{% url 'dashboard' %}">الرئيسية</a>
+            <span>/</span><span>المستندات</span>
+        </div>
+    </div>
+</div>
+
+{% if documents %}
+<div class="card">
+    <div class="card-header">
+        <h5><i class="fas fa-folder-open text-primary me-2"></i>المستندات ({{ documents.count }})</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-wrapper" style="border:none;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>عنوان المستند</th>
+                        <th>النوع</th>
+                        <th>مرتبط بـ</th>
+                        <th>الحجم</th>
+                        <th>رُفع بواسطة</th>
+                        <th>تاريخ الرفع</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for doc in documents %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas {{ doc.get_file_icon }} fa-lg"></i>
+                            <span class="fw-600">{{ doc.title }}</span>
+                        </div>
+                    </td>
+                    <td><span class="badge badge-secondary">{{ doc.get_file_type_display }}</span></td>
+                    <td>
+                        {% if doc.company %}
+                            <a href="{% url 'company_detail' doc.company.pk %}" class="badge badge-primary" style="text-decoration:none;">
+                                <i class="fas fa-building me-1"></i>{{ doc.company.name }}
+                            </a>
+                        {% elif doc.case %}
+                            <a href="{% url 'case_detail' doc.case.pk %}" class="badge badge-info" style="text-decoration:none;">
+                                <i class="fas fa-gavel me-1"></i>{{ doc.case.case_number }}
+                            </a>
+                        {% else %}<span class="text-muted">—</span>{% endif %}
+                    </td>
+                    <td class="fs-12 text-muted">{{ doc.get_file_size_display }}</td>
+                    <td class="fs-13">{{ doc.uploaded_by.get_full_name|default:doc.uploaded_by.username|default:"—" }}</td>
+                    <td class="fs-12 text-muted">{{ doc.uploaded_at|date:"d/m/Y" }}</td>
+                    <td>
+                        <div class="d-flex gap-1">
+                            <a href="{% url 'document_download' doc.pk %}" class="btn btn-sm btn-light" title="تحميل">
+                                <i class="fas fa-download text-primary"></i>
+                            </a>
+                            {% if user.can_delete %}
+                            <a href="{% url 'document_delete' doc.pk %}" class="btn btn-sm btn-light" title="حذف">
+                                <i class="fas fa-trash text-danger"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="card">
+    <div class="empty-state">
+        <div class="icon"><i class="fas fa-folder-open"></i></div>
+        <h5>لا توجد مستندات بعد</h5>
+        <p>ارفع المستندات من خلال صفحة الشركة أو القضية</p>
+        <a href="{% url 'company_list' %}" class="btn btn-primary">
+            <i class="fas fa-building"></i> الذهاب للشركات
+        </a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - نظام مكتب المحاماة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e3a5f 100%);
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px; direction: rtl;
+        }
+        .login-wrapper {
+            width: 100%; max-width: 440px;
+        }
+        .login-logo {
+            text-align: center; margin-bottom: 32px;
+        }
+        .login-logo .logo-img {
+            width: 220px;
+            height: auto;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 4px 16px rgba(0,0,0,0.4));
+        }
+        .login-logo h1 {
+            color: #fff; font-size: 22px; font-weight: 800; margin-bottom: 4px;
+        }
+        .login-logo p { color: #94a3b8; font-size: 14px; }
+
+        .login-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 36px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.3);
+        }
+        .login-card h2 {
+            font-size: 20px; font-weight: 700; margin-bottom: 6px; color: #1e293b;
+        }
+        .login-card .subtitle {
+            color: #64748b; font-size: 13px; margin-bottom: 28px;
+        }
+        .form-label { font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+        .form-control {
+            font-family: 'Cairo', sans-serif;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 14px; direction: rtl;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .form-control:focus {
+            outline: none; border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+        }
+        .input-group-text {
+            background: #f8fafc; border: 1.5px solid #e5e7eb;
+            border-left: none; color: #9ca3af; border-radius: 0 8px 8px 0;
+        }
+        .input-group .form-control { border-radius: 8px 0 0 8px; border-right: 1.5px solid #e5e7eb; }
+        .btn-login {
+            width: 100%; background: #2563eb; color: #fff;
+            border: none; border-radius: 8px;
+            padding: 12px; font-size: 15px; font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer; transition: background .2s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-login:hover { background: #1d4ed8; }
+        .errorlist { list-style: none; padding: 0; margin: 6px 0 0; }
+        .errorlist li { color: #dc2626; font-size: 12px; }
+        .non-field-errors {
+            background: #fee2e2; border-radius: 8px;
+            padding: 10px 14px; margin-bottom: 18px;
+            color: #b91c1c; font-size: 13px;
+        }
+        .login-footer {
+            text-align: center; margin-top: 20px;
+            color: #94a3b8; font-size: 12px;
+        }
+        .mb-4 { margin-bottom: 18px; }
+    </style>
+</head>
+<body>
+<div class="login-wrapper">
+    <!-- الشعار -->
+    <div class="login-logo">
+        <img src="{% static 'images/logo.png' %}" alt="إدارة القضايا للشركات" class="logo-img">
+    </div>
+
+    <!-- بطاقة تسجيل الدخول -->
+    <div class="login-card">
+        <h2>تسجيل الدخول</h2>
+        <p class="subtitle">أدخل بيانات حسابك للمتابعة</p>
+
+        {% if messages %}
+            {% for message in messages %}
+            <div class="non-field-errors">
+                <i class="fas fa-exclamation-circle me-1"></i> {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <!-- أخطاء عامة -->
+            {% if form.non_field_errors %}
+            <div class="non-field-errors">
+                <i class="fas fa-times-circle me-1"></i>
+                {{ form.non_field_errors.0 }}
+            </div>
+            {% endif %}
+
+            <!-- اسم المستخدم -->
+            <div class="mb-4">
+                <label class="form-label">{{ form.username.label }}</label>
+                <div class="input-group">
+                    {{ form.username }}
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                </div>
+                {% if form.username.errors %}
+                    <ul class="errorlist">{% for e in form.username.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                {% endif %}
+            </div>
+
+            <!-- كلمة المرور -->
+            <div class="mb-4">
+                <label class="form-label">{{ form.password.label }}</label>
+                <div class="input-group">
+                    {{ form.password }}
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                </div>
+                {% if form.password.errors %}
+                    <ul class="errorlist">{% for e in form.password.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn-login">
+                <i class="fas fa-sign-in-alt"></i> دخول إلى النظام
+            </button>
+        </form>
+    </div>
+
+    <div class="login-footer">
+        &copy; 2024 نظام إدارة مكتب المحاماة &mdash; جميع الحقوق محفوظة
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

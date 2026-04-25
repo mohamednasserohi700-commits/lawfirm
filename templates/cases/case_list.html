@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% block title %}القضايا{% endblock %}
+{% block page_title %}القضايا{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1><i class="fas fa-gavel text-primary me-2"></i>القضايا</h1>
+        <div class="breadcrumb mt-1">
+            <a href="{% url 'dashboard' %}">الرئيسية</a>
+            <span>/</span><span>القضايا</span>
+        </div>
+    </div>
+</div>
+
+<!-- شريط البحث والتصفية -->
+<div class="filter-bar">
+    <form method="get" class="d-flex align-items-center gap-2 w-100 flex-wrap">
+        <i class="fas fa-search text-muted"></i>
+        <input type="text" name="q" class="form-control" style="max-width:300px;"
+               placeholder="رقم القضية، اسم الشركة، الخصم..."
+               value="{{ query }}">
+        <select name="status" class="form-select" style="max-width:160px;">
+            <option value="">جميع الحالات</option>
+            {% for val, label in status_choices %}
+            <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary btn-sm">
+            <i class="fas fa-filter"></i> تصفية
+        </button>
+        {% if query or status_filter %}
+        <a href="{% url 'case_list' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-times"></i> مسح
+        </a>
+        {% endif %}
+        <span class="text-muted fs-13 me-auto">
+            إجمالي: <strong>{{ cases.count }}</strong> قضية
+        </span>
+    </form>
+</div>
+
+<!-- قائمة القضايا -->
+{% if cases %}
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-wrapper" style="border:none;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>رقم القضية</th>
+                        <th>الشركة / العميل</th>
+                        <th>المحكمة</th>
+                        <th>نوع القضية</th>
+                        <th>الخصم</th>
+                        <th>الحالة</th>
+                        <th>المحامي</th>
+                        <th>الجلسة القادمة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for case in cases %}
+                <tr class="status-{{ case.status }}">
+                    <td>
+                        <a href="{% url 'case_detail' case.pk %}" class="fw-700 text-primary" style="text-decoration:none;">
+                            {{ case.case_number }}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{% url 'company_detail' case.company.pk %}" class="fw-600" style="text-decoration:none;color:inherit;">
+                            {{ case.company.name }}
+                        </a>
+                        <div class="fs-12 text-muted">{{ case.company.client_name }}</div>
+                    </td>
+                    <td class="fs-13">{{ case.court_name }}</td>
+                    <td><span class="badge badge-info">{{ case.get_case_type_display }}</span></td>
+                    <td class="fs-13">{{ case.opponent_name }}</td>
+                    <td>
+                        <span class="badge badge-{% if case.status == 'open' %}success{% elif case.status == 'closed' %}danger{% else %}warning{% endif %}">
+                            {% if case.status == 'open' %}<i class="fas fa-circle" style="font-size:7px;"></i>{% endif %}
+                            {{ case.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="fs-13">
+                        {% if case.assigned_lawyer %}
+                            {{ case.assigned_lawyer.get_full_name|default:case.assigned_lawyer.username }}
+                        {% else %}<span class="text-muted">—</span>{% endif %}
+                    </td>
+                    <td>
+                        {% if case.next_session %}
+                        <span class="badge badge-primary">
+                            <i class="fas fa-calendar-alt"></i>
+                            {{ case.next_session.session_date|date:"d/m/Y" }}
+                        </span>
+                        {% else %}
+                        <span class="text-muted fs-12">—</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="d-flex gap-1">
+                            <a href="{% url 'case_detail' case.pk %}" class="btn btn-sm btn-light" title="عرض">
+                                <i class="fas fa-eye text-primary"></i>
+                            </a>
+                            {% if user.can_edit %}
+                            <a href="{% url 'case_edit' case.pk %}" class="btn btn-sm btn-light" title="تعديل">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="card">
+    <div class="empty-state">
+        <div class="icon"><i class="fas fa-gavel"></i></div>
+        <h5>لا توجد قضايا</h5>
+        <p>{% if query or status_filter %}لم يتم العثور على قضايا تطابق معايير البحث{% else %}لم تُضف أي قضايا بعد{% endif %}</p>
+        {% if not query and not status_filter %}
+        <a href="{% url 'company_list' %}" class="btn btn-primary">
+            <i class="fas fa-building"></i> اختر شركة لإضافة قضية
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

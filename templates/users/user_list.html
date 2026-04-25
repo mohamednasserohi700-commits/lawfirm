@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}المستخدمون{% endblock %}
+{% block page_title %}إدارة المستخدمين{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1><i class="fas fa-users text-primary me-2"></i>إدارة المستخدمين</h1>
+        <div class="breadcrumb mt-1">
+            <a href="{% url 'dashboard' %}">الرئيسية</a>
+            <span>/</span><span>المستخدمون</span>
+        </div>
+    </div>
+    <a href="{% url 'user_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> إضافة مستخدم
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-wrapper" style="border:none;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>المستخدم</th>
+                        <th>اسم المستخدم</th>
+                        <th>البريد الإلكتروني</th>
+                        <th>رقم الهاتف</th>
+                        <th>الدور</th>
+                        <th>الحالة</th>
+                        <th>تاريخ الإنشاء</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div style="width:36px;height:36px;background:{% if u.role == 'admin' %}#eff6ff{% elif u.role == 'lawyer' %}#f0fdf4{% else %}#fef3c7{% endif %};border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:{% if u.role == 'admin' %}var(--primary){% elif u.role == 'lawyer' %}var(--success){% else %}var(--warning){% endif %};">
+                                {{ u.get_full_name|first|default:u.username|first|upper }}
+                            </div>
+                            <span class="fw-600">{{ u.get_full_name|default:"—" }}</span>
+                        </div>
+                    </td>
+                    <td class="fs-13">{{ u.username }}</td>
+                    <td class="fs-13">{{ u.email|default:"—" }}</td>
+                    <td class="fs-13" dir="ltr">{{ u.phone|default:"—" }}</td>
+                    <td>
+                        <span class="badge badge-{% if u.role == 'admin' %}primary{% elif u.role == 'lawyer' %}success{% else %}warning{% endif %}">
+                            {{ u.get_role_display }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if u.is_active %}
+                            <span class="badge badge-success"><i class="fas fa-circle" style="font-size:7px;"></i> نشط</span>
+                        {% else %}
+                            <span class="badge badge-danger">غير نشط</span>
+                        {% endif %}
+                    </td>
+                    <td class="fs-12 text-muted">{{ u.created_at|date:"d/m/Y" }}</td>
+                    <td>
+                        <div class="d-flex gap-1">
+                            <a href="{% url 'user_edit' u.pk %}" class="btn btn-sm btn-light" title="تعديل">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            {% if u != request.user %}
+                            <a href="{% url 'user_delete' u.pk %}" class="btn btn-sm btn-light" title="حذف">
+                                <i class="fas fa-trash text-danger"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

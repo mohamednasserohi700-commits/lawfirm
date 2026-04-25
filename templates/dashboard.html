@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% block title %}لوحة التحكم{% endblock %}
+{% block page_title %}لوحة التحكم{% endblock %}
+
+{% block content %}
+
+<!-- ===== إحصاءات سريعة ===== -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <a href="{% url 'company_list' %}" class="stat-card">
+            <div class="stat-icon blue"><i class="fas fa-building"></i></div>
+            <div class="stat-info">
+                <div class="number">{{ total_companies }}</div>
+                <div class="label">إجمالي الشركات</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="{% url 'case_list' %}?status=open" class="stat-card">
+            <div class="stat-icon green"><i class="fas fa-gavel"></i></div>
+            <div class="stat-info">
+                <div class="number">{{ open_cases }}</div>
+                <div class="label">قضايا مفتوحة</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="{% url 'case_list' %}?status=postponed" class="stat-card">
+            <div class="stat-icon orange"><i class="fas fa-pause-circle"></i></div>
+            <div class="stat-info">
+                <div class="number">{{ postponed_cases }}</div>
+                <div class="label">قضايا مؤجلة</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="{% url 'case_list' %}?status=closed" class="stat-card">
+            <div class="stat-icon red"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-info">
+                <div class="number">{{ closed_cases }}</div>
+                <div class="label">قضايا مغلقة</div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- ===== البحث السريع ===== -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" action="{% url 'dashboard' %}">
+            <div class="d-flex gap-2 align-items-center">
+                <i class="fas fa-search text-muted fs-13"></i>
+                <input type="text" name="q" class="form-control"
+                       placeholder="ابحث باسم الشركة، اسم العميل، رقم القضية..."
+                       value="{{ search_query }}" autofocus>
+                <button type="submit" class="btn btn-primary" style="white-space:nowrap;">
+                    <i class="fas fa-search"></i> بحث
+                </button>
+                {% if search_query %}
+                <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary" style="white-space:nowrap;">
+                    <i class="fas fa-times"></i> مسح
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ===== نتائج البحث ===== -->
+{% if search_results %}
+<div class="card mb-4 fade-in">
+    <div class="card-header">
+        <h5><i class="fas fa-search-plus text-primary me-2"></i>نتائج البحث عن "{{ search_results.query }}"</h5>
+    </div>
+    <div class="card-body">
+        <!-- شركات -->
+        {% if search_results.companies %}
+        <h6 class="fw-700 mb-3"><i class="fas fa-building text-primary me-1"></i>الشركات ({{ search_results.companies.count }})</h6>
+        <div class="table-wrapper mb-4">
+            <table class="table">
+                <thead><tr>
+                    <th>اسم الشركة</th><th>اسم العميل</th><th>الهاتف</th><th>القضايا</th><th></th>
+                </tr></thead>
+                <tbody>
+                {% for c in search_results.companies %}
+                <tr>
+                    <td class="fw-600">{{ c.name }}</td>
+                    <td>{{ c.client_name }}</td>
+                    <td dir="ltr">{{ c.phone|default:"—" }}</td>
+                    <td><span class="badge badge-primary">{{ c.total_cases_count }} قضية</span></td>
+                    <td><a href="{% url 'company_detail' c.pk %}" class="btn btn-sm btn-outline-primary">عرض</a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+        <!-- قضايا -->
+        {% if search_results.cases %}
+        <h6 class="fw-700 mb-3"><i class="fas fa-gavel text-primary me-1"></i>القضايا ({{ search_results.cases.count }})</h6>
+        <div class="table-wrapper">
+            <table class="table">
+                <thead><tr>
+                    <th>رقم القضية</th><th>الشركة</th><th>المحكمة</th><th>الحالة</th><th></th>
+                </tr></thead>
+                <tbody>
+                {% for case in search_results.cases %}
+                <tr>
+                    <td class="fw-600">{{ case.case_number }}</td>
+                    <td>{{ case.company.name }}</td>
+                    <td>{{ case.court_name }}</td>
+                    <td>
+                        <span class="badge badge-{% if case.status == 'open' %}success{% elif case.status == 'closed' %}danger{% else %}warning{% endif %}">
+                            {{ case.get_status_display }}
+                        </span>
+                    </td>
+                    <td><a href="{% url 'case_detail' case.pk %}" class="btn btn-sm btn-outline-primary">عرض</a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+        {% if not search_results.companies and not search_results.cases %}
+        <div class="empty-state">
+            <div class="icon"><i class="fas fa-search"></i></div>
+            <h5>لا توجد نتائج</h5>
+            <p>لم يتم العثور على نتائج لـ "{{ search_results.query }}"</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<!-- ===== الصف السفلي ===== -->
+<div class="row g-4">
+
+    <!-- الجلسات القادمة -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5><i class="fas fa-calendar-alt text-primary me-2"></i>الجلسات القادمة (7 أيام)</h5>
+                <a href="{% url 'case_list' %}" class="btn btn-sm btn-outline-primary">عرض الكل</a>
+            </div>
+            <div class="card-body p-0">
+                {% if upcoming_sessions %}
+                <div class="table-wrapper" style="border:none;border-radius:0;">
+                    <table class="table">
+                        <thead><tr>
+                            <th>التاريخ</th><th>القضية</th><th>الشركة</th><th>الحالة</th>
+                        </tr></thead>
+                        <tbody>
+                        {% for s in upcoming_sessions %}
+                        <tr>
+                            <td>
+                                <div class="fw-600">{{ s.session_date|date:"d/m/Y" }}</div>
+                                <div class="fs-12 text-muted">{{ s.session_date|date:"l" }}</div>
+                            </td>
+                            <td>
+                                <a href="{% url 'case_detail' s.case.pk %}" class="fw-600 text-primary" style="text-decoration:none;">
+                                    {{ s.case.case_number }}
+                                </a>
+                            </td>
+                            <td class="fs-13 text-muted">{{ s.case.company.name }}</td>
+                            <td><span class="badge badge-primary">{{ s.get_status_display }}</span></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <div class="icon"><i class="fas fa-calendar-check"></i></div>
+                    <h5>لا توجد جلسات قادمة</h5>
+                    <p>لا توجد جلسات مجدولة خلال الأسبوع القادم</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- أحدث الشركات -->
+    <div class="col-lg-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-building text-primary me-2"></i>أحدث الشركات</h5>
+                <a href="{% url 'company_list' %}" class="btn btn-sm btn-outline-primary">عرض الكل</a>
+            </div>
+            <div class="card-body p-0">
+                {% if recent_companies %}
+                <div class="table-wrapper" style="border:none;border-radius:0;">
+                    <table class="table">
+                        <thead><tr><th>الشركة</th><th>العميل</th><th>القضايا</th><th></th></tr></thead>
+                        <tbody>
+                        {% for c in recent_companies %}
+                        <tr>
+                            <td class="fw-600">{{ c.name }}</td>
+                            <td class="text-muted fs-13">{{ c.client_name }}</td>
+                            <td>
+                                <span class="badge badge-{% if c.open_cases_count > 0 %}success{% else %}secondary{% endif %}">
+                                    {{ c.open_cases_count }} مفتوحة
+                                </span>
+                            </td>
+                            <td><a href="{% url 'company_detail' c.pk %}" class="btn btn-sm btn-light">عرض</a></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <div class="icon"><i class="fas fa-building"></i></div>
+                    <h5>لا توجد شركات بعد</h5>
+                    <a href="{% url 'company_create' %}" class="btn btn-primary btn-sm">إضافة شركة</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- أحدث القضايا -->
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-gavel text-primary me-2"></i>أحدث القضايا</h5>
+                <a href="{% url 'case_list' %}" class="btn btn-sm btn-outline-primary">عرض الكل</a>
+            </div>
+            <div class="card-body p-0">
+                {% if recent_cases %}
+                <div class="table-wrapper" style="border:none;border-radius:0;">
+                    <table class="table">
+                        <thead><tr><th>رقم القضية</th><th>الشركة</th><th>الحالة</th></tr></thead>
+                        <tbody>
+                        {% for case in recent_cases %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'case_detail' case.pk %}" class="fw-600 text-primary" style="text-decoration:none;">
+                                    {{ case.case_number }}
+                                </a>
+                            </td>
+                            <td class="fs-13 text-muted">{{ case.company.name }}</td>
+                            <td>
+                                <span class="badge badge-{% if case.status == 'open' %}success{% elif case.status == 'closed' %}danger{% else %}warning{% endif %}">
+                                    {{ case.get_status_display }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state" style="padding:30px;">
+                    <p class="text-muted">لا توجد قضايا بعد</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
