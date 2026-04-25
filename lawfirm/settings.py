@@ -10,8 +10,9 @@ SECRET_KEY = 'django-insecure-lawfirm-secret-key-change-in-production-2024'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = [
+    "lawfirm-production-0fad.up.railway.app"
+]
 # التطبيقات المثبتة
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -99,3 +100,7 @@ LOGOUT_REDIRECT_URL = '/users/login/'
 # أنواع الملفات المسموح برفعها
 ALLOWED_UPLOAD_EXTENSIONS = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png', '.gif']
 MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10 ميجابايت
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://lawfirm-production-0fad.up.railway.app"
+]
