@@ -1,6 +1,6 @@
 """
 نماذج تطبيق المستخدمين
-يدعم ثلاثة أدوار: مدير النظام، محامي، موظف
+يدعم أربعة أدوار: مطور النظام (مخفي)، مدير النظام، محامي، موظف
 """
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -10,6 +10,7 @@ class CustomUser(AbstractUser):
     """نموذج المستخدم المخصص مع دعم الأدوار"""
 
     class Role(models.TextChoices):
+        DEVELOPER = 'developer', 'مطور النظام'
         ADMIN = 'admin', 'مدير النظام'
         LAWYER = 'lawyer', 'محامي'
         EMPLOYEE = 'employee', 'موظف'
@@ -27,6 +28,12 @@ class CustomUser(AbstractUser):
     is_active = models.BooleanField(default=True, verbose_name='نشط')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاريخ الإنشاء')
 
+    # تتبع الاتصال
+    last_seen = models.DateTimeField(null=True, blank=True, verbose_name='آخر ظهور')
+    last_ip = models.GenericIPAddressField(null=True, blank=True, verbose_name='آخر IP')
+    last_device = models.CharField(max_length=300, blank=True, verbose_name='آخر جهاز')
+    is_online = models.BooleanField(default=False, verbose_name='متصل الآن')
+
     class Meta:
         verbose_name = 'مستخدم'
         verbose_name_plural = 'المستخدمون'
@@ -36,7 +43,15 @@ class CustomUser(AbstractUser):
 
     # --- صلاحيات الدور ---
     @property
+    def is_developer(self):
+        return self.role == self.Role.DEVELOPER
+
+    @property
     def is_admin(self):
+        return self.role == self.Role.ADMIN or self.role == self.Role.DEVELOPER
+
+    @property
+    def is_real_admin(self):
         return self.role == self.Role.ADMIN
 
     @property
@@ -49,15 +64,12 @@ class CustomUser(AbstractUser):
 
     @property
     def can_manage_users(self):
-        """فقط مدير النظام يمكنه إدارة المستخدمين"""
-        return self.is_admin
+        return self.role in [self.Role.ADMIN, self.Role.DEVELOPER]
 
     @property
     def can_delete(self):
-        """فقط مدير النظام والمحامي يمكنهم الحذف"""
-        return self.is_admin or self.is_lawyer
+        return self.role in [self.Role.ADMIN, self.Role.DEVELOPER, self.Role.LAWYER]
 
     @property
     def can_edit(self):
-        """مدير النظام والمحامي يمكنهم التعديل"""
-        return self.is_admin or self.is_lawyer
+        return self.role in [self.Role.ADMIN, self.Role.DEVELOPER, self.Role.LAWYER]
