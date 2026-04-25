@@ -1,5 +1,5 @@
 Django>=4.2
 Pillow>=10.0
-gunicorn==21.2.0
-whitenoise
-gunicorn
+gunicorn>=21.2
+whitenoise>=6.6
+psycopg2-binary>=2.9
