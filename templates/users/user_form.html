@@ -25,12 +25,23 @@
                         <div class="form-section-title">البيانات الشخصية</div>
                         <div class="row g-3">
                             {% for field in form %}
+                            {% if field.field.widget.input_type == 'checkbox' %}
+                            <div class="col-md-6 form-group">
+                                <div class="form-check mt-4">
+                                    {{ field }}
+                                    <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                </div>
+                                {% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors.0 }}</div>{% endif %}
+                                {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                            </div>
+                            {% else %}
                             <div class="col-md-6 form-group">
                                 <label class="form-label">{{ field.label }}</label>
                                 {{ field }}
                                 {% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors.0 }}</div>{% endif %}
                                 {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
                             </div>
+                            {% endif %}
                             {% endfor %}
                         </div>
                     </div>
