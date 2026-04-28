@@ -1219,7 +1219,7 @@
         {% endif %}
 
         {% if user.is_real_admin or user.is_developer or user.can_view_online %}
-        <a href="{% url 'online_users' %}" class="nav-link {% if 'online_users' == request.resolver_match.url_name %}active{% endif %}">
+        <a href="{% url 'users:online_users' %}" class="nav-link {% if 'online_users' == request.resolver_match.url_name %}active{% endif %}">
             <span class="nav-icon"><i class="fas fa-circle text-success" style="font-size:10px"></i></span>
             <span class="nav-text">المتصلون الآن</span>
         </a>
