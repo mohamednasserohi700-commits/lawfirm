@@ -1212,7 +1212,7 @@
         {% endif %}
 
         {% if user.is_admin %}
-        <a href="{% url 'user_list' %}" class="nav-link {% if 'user_list' == request.resolver_match.url_name or 'user_create' == request.resolver_match.url_name or 'user_edit' == request.resolver_match.url_name %}active{% endif %}">
+        <a href="{% url 'users:user_list' %}" class="nav-link {% if 'user_list' == request.resolver_match.url_name or 'user_create' == request.resolver_match.url_name or 'user_edit' == request.resolver_match.url_name %}active{% endif %}">
             <span class="nav-icon"><i class="fas fa-users"></i></span>
             <span class="nav-text">المستخدمون</span>
         </a>
