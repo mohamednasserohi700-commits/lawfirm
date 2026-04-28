@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1><i class="fas fa-gavel text-primary me-2"></i>{{ title }}</h1>
+        <div class="breadcrumb mt-1">
+            <a href="{% url 'dashboard' %}">الرئيسية</a>
+            <span>/</span>
+            <a href="{% url 'company_detail' company.pk %}">{{ company.name }}</a>
+            <span>/</span><span>{{ title }}</span>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-gavel text-primary me-2"></i>{{ title }}</h5>
+                <span class="badge badge-secondary">{{ company.name }}</span>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <div class="form-section">
+                        <div class="form-section-title">بيانات القضية الأساسية</div>
+                        <div class="row g-3">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label">{{ form.case_number.label }} <span class="text-danger">*</span></label>
+                                {{ form.case_number }}
+                                {% if form.case_number.errors %}<div class="invalid-feedback d-block">{{ form.case_number.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label">{{ form.court_name.label }} <span class="text-danger">*</span></label>
+                                {{ form.court_name }}
+                                {% if form.court_name.errors %}<div class="invalid-feedback d-block">{{ form.court_name.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label">{{ form.case_type.label }}</label>
+                                {{ form.case_type }}
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label">{{ form.status.label }}</label>
+                                {{ form.status }}
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label">{{ form.opponent_name.label }} <span class="text-danger">*</span></label>
+                                {{ form.opponent_name }}
+                                {% if form.opponent_name.errors %}<div class="invalid-feedback d-block">{{ form.opponent_name.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label">{{ form.assigned_lawyer.label }}</label>
+                                {{ form.assigned_lawyer }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">{{ form.notes.label }}</label>
+                        {{ form.notes }}
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end mt-3">
+                        <a href="{% url 'company_detail' company.pk %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> إلغاء
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ القضية
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

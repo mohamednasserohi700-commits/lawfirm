@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %}القضايا{% endblock %}
+{% block page_title %}القضايا{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1><i class="fas fa-gavel text-primary me-2"></i>القضايا</h1>
+        <div class="breadcrumb mt-1">
+            <a href="{% url 'dashboard' %}">الرئيسية</a>
+            <span>/</span><span>القضايا</span>
+        </div>
+    </div>
+</div>
+
+<!-- شريط البحث والتصفية -->
+<div class="filter-bar">
+    <form method="get" class="d-flex align-items-center gap-2 w-100 flex-wrap">
+        <i class="fas fa-search text-muted"></i>
+        <input type="text" name="q" class="form-control" style="max-width:300px;"
+               placeholder="رقم القضية، اسم الشركة، الخصم..."
+               value="{{ query }}">
+        <select name="status" class="form-select" style="max-width:160px;">
+            <option value="">جميع الحالات</option>
+            {% for val, label in status_choices %}
+            <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary btn-sm">
+            <i class="fas fa-filter"></i> تصفية
+        </button>
+        {% if query or status_filter %}
+        <a href="{% url 'case_list' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-times"></i> مسح
+        </a>
+        {% endif %}
+        <span class="text-muted fs-13 me-auto">
+            إجمالي: <strong>{{ cases.count }}</strong> قضية
+        </span>
+    </form>
+</div>
+
+<!-- قائمة القضايا -->
+{% if cases %}
+<div class="control-grid">
+    <div class="control-panel">
+        <ul class="smart-list">
+            {% for case in cases %}
+            <li>
+                <details class="smart-row js-detail-row" data-title="{{ case.case_number }}" data-extra="{{ case.company.name }} - {{ case.court_name }}">
+                    <summary>
+                        <span>
+                            <strong class="text-primary">{{ case.case_number }}</strong>
+                            <span class="text-muted"> — {{ case.company.name }}</span>
+                        </span>
+                        <span class="badge badge-{% if case.status == 'open' %}success{% elif case.status == 'closed' %}danger{% else %}warning{% endif %}">{{ case.get_status_display }}</span>
+                    </summary>
+                    <div class="expand-body">
+                        المحكمة: {{ case.court_name }}<br>
+                        النوع: {{ case.get_case_type_display }}<br>
+                        الخصم: {{ case.opponent_name }}<br>
+                        المحامي:
+                        {% if case.assigned_lawyer %}
+                            {{ case.assigned_lawyer.get_full_name|default:case.assigned_lawyer.username }}
+                        {% else %}—{% endif %}<br>
+                        الجلسة القادمة:
+                        {% if case.next_session %}{{ case.next_session.session_date|date:"d/m/Y" }}{% else %}—{% endif %}
+                        <div class="d-flex gap-2 mt-2">
+                            <a href="{% url 'case_detail' case.pk %}" class="btn btn-sm btn-primary">عرض</a>
+                            {% if user.can_edit %}<a href="{% url 'case_edit' case.pk %}" class="btn btn-sm btn-light">تعديل</a>{% endif %}
+                        </div>
+                    </div>
+                </details>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <aside class="control-panel side-live-panel">
+        <h6 class="mb-3"><i class="fas fa-satellite-dish text-info me-2"></i>مراقبة القضايا</h6>
+        <div class="d-flex justify-content-between mb-2"><span class="text-muted">مفتوحة</span><strong class="text-success">{{ cases|length }}</strong></div>
+        <p class="text-muted fs-13 mb-0">اضغط على أي عنصر لعرض التفاصيل التفصيلية داخل اللوحة الجانبية.</p>
+    </aside>
+</div>
+
+<div class="detail-drawer" id="detailDrawer">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <strong class="text-primary">تفاصيل سريعة</strong>
+        <button class="btn btn-sm btn-light" onclick="closeDrawer()"><i class="fas fa-times"></i></button>
+    </div>
+    <h6 id="drawerTitle">—</h6>
+    <p id="drawerExtra" class="text-muted fs-13 mb-0">اختر قضية من القائمة.</p>
+</div>
+
+{% else %}
+<div class="card">
+    <div class="empty-state">
+        <div class="icon"><i class="fas fa-gavel"></i></div>
+        <h5>لا توجد قضايا</h5>
+        <p>{% if query or status_filter %}لم يتم العثور على قضايا تطابق معايير البحث{% else %}لم تُضف أي قضايا بعد{% endif %}</p>
+        {% if not query and not status_filter %}
+        <a href="{% url 'company_list' %}" class="btn btn-primary">
+            <i class="fas fa-building"></i> اختر شركة لإضافة قضية
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<script>
+    (function() {
+        const drawer = document.getElementById('detailDrawer');
+        if (!drawer) return;
+        const titleEl = document.getElementById('drawerTitle');
+        const extraEl = document.getElementById('drawerExtra');
+        document.querySelectorAll('.js-detail-row').forEach((row) => {
+            row.addEventListener('toggle', function() {
+                if (this.open) {
+                    titleEl.textContent = this.dataset.title || 'تفاصيل';
+                    extraEl.textContent = this.dataset.extra || '';
+                    drawer.classList.add('open');
+                }
+            });
+        });
+        window.closeDrawer = function() { drawer.classList.remove('open'); };
+    })();
+</script>
+{% endblock %}
