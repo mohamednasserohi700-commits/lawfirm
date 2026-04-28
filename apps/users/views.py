@@ -49,7 +49,7 @@ def logout_view(request):
         CustomUser.objects.filter(pk=request.user.pk).update(is_online=False)
     logout(request)
     messages.info(request, 'تم تسجيل الخروج بنجاح.')
-    return redirect('login')
+    return redirect('users:login')
 
 
 # ==================== إدارة المستخدمين (للأدمن) ====================
@@ -78,7 +78,7 @@ def user_create(request):
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, 'تم إنشاء المستخدم بنجاح.')
-        return redirect('user_list')
+        return redirect('users:user_list')
     return render(request, 'users/user_form.html', {'form': form, 'title': 'إضافة مستخدم جديد'})
 
 
@@ -90,12 +90,12 @@ def user_edit(request, pk):
     user = get_object_or_404(CustomUser, pk=pk)
     if not _can_manage_target_user(request.user, user):
         messages.error(request, 'لا يمكنك تعديل هذا المستخدم.')
-        return redirect('user_list')
+        return redirect('users:user_list')
     form = UserEditForm(request.POST or None, instance=user)
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, 'تم تعديل بيانات المستخدم والصلاحيات بنجاح.')
-        return redirect('user_list')
+        return redirect('users:user_list')
     return render(request, 'users/user_form.html', {'form': form, 'title': 'تعديل بيانات المستخدم', 'user_obj': user})
 
 
@@ -107,14 +107,14 @@ def user_delete(request, pk):
     user = get_object_or_404(CustomUser, pk=pk)
     if not _can_manage_target_user(request.user, user):
         messages.error(request, 'لا يمكنك حذف هذا المستخدم.')
-        return redirect('user_list')
+        return redirect('users:user_list')
     if request.method == 'POST':
         if user == request.user:
             messages.error(request, 'لا يمكنك حذف حسابك الخاص.')
         else:
             user.delete()
             messages.success(request, 'تم حذف المستخدم بنجاح.')
-        return redirect('user_list')
+        return redirect('users:user_list')
     return render(request, 'users/user_confirm_delete.html', {'user_obj': user})
 
 
@@ -126,14 +126,14 @@ def admin_change_password(request, pk):
     user = get_object_or_404(CustomUser, pk=pk)
     if not _can_manage_target_user(request.user, user):
         messages.error(request, 'لا يمكنك تغيير كلمة مرور هذا المستخدم.')
-        return redirect('user_list')
+        return redirect('users:user_list')
     if request.method == 'POST':
         new_password = request.POST.get('new_password', '').strip()
         if len(new_password) >= 6:
             user.set_password(new_password)
             user.save()
             messages.success(request, f'تم تغيير كلمة مرور {user.username} بنجاح.')
-            return redirect('user_list')
+            return redirect('users:user_list')
         else:
             messages.error(request, 'كلمة المرور يجب أن تكون 6 أحرف على الأقل.')
     return render(request, 'users/change_password.html', {'user_obj': user})
@@ -176,7 +176,7 @@ def online_users_view(request):
                 # تحديث حالة الاتصال
                 CustomUser.objects.filter(pk=target.pk).update(is_online=False)
                 messages.success(request, f'تم تسجيل خروج {target.username} بنجاح.')
-        return redirect('online_users')
+        return redirect('users:online_users')
 
     return render(request, 'users/online_users.html', {'all_users': all_users})
 
@@ -186,7 +186,7 @@ def online_users_view(request):
 def developer_required(view_func):
     def wrapper(request, *args, **kwargs):
         if not request.user.is_authenticated or not request.user.is_developer:
-            return redirect('login')
+            return redirect('users:login')
         return view_func(request, *args, **kwargs)
     return wrapper
 
@@ -220,7 +220,7 @@ def developer_change_password(request, pk):
             messages.success(request, f'تم تغيير كلمة مرور {user.username} بنجاح.')
         else:
             messages.error(request, 'كلمة المرور يجب أن تكون 6 أحرف على الأقل.')
-    return redirect('developer_panel')
+    return redirect('users:developer_panel')
 
 
 @developer_required
@@ -241,7 +241,7 @@ def developer_toggle_user(request, pk):
             CustomUser.objects.filter(pk=user.pk).update(is_online=False)
         status = 'تفعيل' if user.is_active else 'تعطيل'
         messages.success(request, f'تم {status} المستخدم {user.username}.')
-    return redirect('developer_panel')
+    return redirect('users:developer_panel')
 
 
 # ==================== إدارة صلاحيات المستخدم ====================
@@ -254,7 +254,7 @@ def user_permissions(request, pk):
         return redirect('dashboard')
     target = get_object_or_404(CustomUser, pk=pk)
     if not _can_manage_target_user(request.user, target):
-        return redirect('user_list')
+        return redirect('users:user_list')
 
     PERMISSIONS = [
         ('can_view_online', 'مشاهدة المتصلين'),
@@ -269,7 +269,7 @@ def user_permissions(request, pk):
             setattr(target, perm, val)
         target.save()
         messages.success(request, f'تم تحديث صلاحيات {target.username} بنجاح.')
-        return redirect('user_permissions', pk=pk)
+        return redirect('users:user_permissions', pk=pk)
 
     if request.user.is_developer:
         users = CustomUser.objects.all()
