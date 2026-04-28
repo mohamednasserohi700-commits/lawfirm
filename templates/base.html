@@ -1330,9 +1330,8 @@
                     <a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> الرئيسية</a>
                     {% if user.is_admin %}
                     <a href="{% url 'users:user_list' %}"><i class="fas fa-users"></i> إدارة المستخدمين</a>
-
                     {% endif %}
-                    <a href="{% url 'logout' %}" class="logout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+                    <a href="{% url 'users:logout' %}" class="logout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
                 </div>
             </div>
 

@@ -11,7 +11,7 @@
             <span>/</span><span>المستخدمون</span>
         </div>
     </div>
-    <a href="{% url 'user_create' %}" class="btn btn-primary">
+    <a href="{% url 'users:user_create' %}" class="btn btn-primary">
         <i class="fas fa-plus"></i> إضافة مستخدم
     </a>
 </div>
@@ -67,7 +67,7 @@
                                 <a href="{% url 'user_permissions' u.pk %}" class="btn btn-sm btn-light" title="الصلاحيات">
                                     <i class="fas fa-shield-alt text-primary"></i>
                                 </a>
-                                <a href="{% url 'user_edit' u.pk %}" class="btn btn-sm btn-light" title="تعديل">
+                                <a href="{% url 'users:user_edit' u.pk %}" class="btn btn-sm btn-light" title="تعديل">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 {% if u != request.user %}
@@ -92,7 +92,7 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h6 class="mb-0"><i class="fas fa-shield-alt text-primary me-2"></i> صلاحيات: {{ selected_user.username }}</h6>
-            <a href="{% url 'user_list' %}" class="btn btn-sm btn-light"><i class="fas fa-times"></i></a>
+            <a href="{% url 'users:user_list' %}" class="btn btn-sm btn-light"><i class="fas fa-times"></i></a>
         </div>
         <div class="card-body">
             <!-- معلومات المستخدم -->
