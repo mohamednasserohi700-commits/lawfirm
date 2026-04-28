@@ -12,6 +12,10 @@ urlpatterns = [
     path('<int:pk>/edit/', views.user_edit, name='user_edit'),
     path('<int:pk>/delete/', views.user_delete, name='user_delete'),
     path('<int:pk>/change-password/', views.admin_change_password, name='admin_change_password'),
+    path('<int:pk>/permissions/', views.user_permissions, name='user_permissions'),
+
+    # صفحة المتصلين
+    path('online/', views.online_users_view, name='online_users'),
 
     # لوحة المطور (مخفية)
     path('dev/panel/', views.developer_panel, name='developer_panel'),
