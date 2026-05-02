@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}{{ page.title }}{% endblock %}
+{% block page_title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1><i class="fas {{ page.icon }} text-primary me-2"></i>{{ page.title }}</h1>
+        <div class="breadcrumb mt-1"><a href="{% url 'dashboard' %}">الرئيسية</a><span>/</span><span>{{ page.title }}</span></div>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-12"><div class="metric-tile danger"><div class="value">{{ expenses_total }}</div><div class="fs-12 text-muted">إجمالي المصروفات المسجلة</div></div></div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header"><h5>تسجيل مصروف</h5></div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="form-group">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors.0 }}</div>{% endif %}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-plus"></i> حفظ المصروف</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header"><h5>سجل المصروفات</h5></div>
+            <div class="card-body p-0">
+                <div class="table-wrapper table-clean">
+                    <table class="table">
+                        <thead><tr><th>التاريخ</th><th>القضية</th><th>الشركة</th><th>الوصف</th><th>التصنيف</th><th>المبلغ</th></tr></thead>
+                        <tbody>
+                        {% for e in expenses %}
+                            <tr>
+                                <td>{{ e.expense_date|date:"d/m/Y" }}</td>
+                                <td>{{ e.case.case_number }}</td>
+                                <td>{{ e.case.company.name }}</td>
+                                <td>{{ e.title }}</td>
+                                <td><span class="badge badge-secondary">{{ e.get_category_display }}</span></td>
+                                <td>{{ e.amount }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="6" class="text-muted">لا توجد مصروفات مسجلة.</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

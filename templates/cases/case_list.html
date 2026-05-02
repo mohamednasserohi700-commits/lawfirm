@@ -18,10 +18,10 @@
 <div class="filter-bar">
     <form method="get" class="d-flex align-items-center gap-2 w-100 flex-wrap">
         <i class="fas fa-search text-muted"></i>
-        <input type="text" name="q" class="form-control" style="max-width:300px;"
+        <input type="text" name="q" class="form-control form-control-sm-limit"
                placeholder="رقم القضية، اسم الشركة، الخصم..."
                value="{{ query }}">
-        <select name="status" class="form-select" style="max-width:160px;">
+        <select name="status" class="form-select form-select-sm-limit">
             <option value="">جميع الحالات</option>
             {% for val, label in status_choices %}
             <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>{{ label }}</option>

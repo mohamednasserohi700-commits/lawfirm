@@ -21,9 +21,9 @@
 
 <!-- شريط البحث -->
 <div class="filter-bar">
-    <form method="get" class="d-flex align-items-center gap-2 w-100" style="flex-wrap:wrap;">
+    <form method="get" class="d-flex align-items-center gap-2 w-100 flex-wrap">
         <i class="fas fa-search text-muted"></i>
-        <input type="text" name="q" class="form-control" style="max-width:320px;"
+        <input type="text" name="q" class="form-control form-control-md-limit"
                placeholder="ابحث باسم الشركة أو العميل أو الهاتف..."
                value="{{ query }}">
         <button type="submit" class="btn btn-primary btn-sm">
@@ -45,18 +45,16 @@
 <div class="row g-3">
     {% for company in companies %}
     <div class="col-md-6 col-xl-4">
-        <div class="card h-100" style="transition: transform .2s, box-shadow .2s;"
-             onmouseenter="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,.1)'"
-             onmouseleave="this.style.transform='';this.style.boxShadow=''">
+        <div class="card h-100 card-lift">
             <div class="card-body">
                 <!-- رأس البطاقة -->
                 <div class="d-flex align-items-start justify-content-between mb-3">
                     <div class="d-flex align-items-center gap-2">
-                        <div style="width:42px;height:42px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <div class="icon-chip">
                             <i class="fas fa-building text-primary"></i>
                         </div>
                         <div>
-                            <div class="fw-700" style="font-size:15px;">{{ company.name }}</div>
+                            <div class="fw-700 fs-15">{{ company.name }}</div>
                             <div class="fs-13 text-muted">{{ company.client_name }}</div>
                         </div>
                     </div>
@@ -69,37 +67,37 @@
                 <div class="d-flex flex-column gap-1 mb-3">
                     {% if company.phone %}
                     <div class="d-flex align-items-center gap-2 fs-13 text-muted">
-                        <i class="fas fa-phone" style="width:14px;"></i>
+                        <i class="fas fa-phone icon-fixed"></i>
                         <span dir="ltr">{{ company.phone }}</span>
                     </div>
                     {% endif %}
                     {% if company.email %}
                     <div class="d-flex align-items-center gap-2 fs-13 text-muted">
-                        <i class="fas fa-envelope" style="width:14px;"></i>
+                        <i class="fas fa-envelope icon-fixed"></i>
                         <span>{{ company.email }}</span>
                     </div>
                     {% endif %}
                     {% if company.address %}
                     <div class="d-flex align-items-center gap-2 fs-13 text-muted">
-                        <i class="fas fa-map-marker-alt" style="width:14px;"></i>
+                        <i class="fas fa-map-marker-alt icon-fixed"></i>
                         <span>{{ company.address|truncatechars:40 }}</span>
                     </div>
                     {% endif %}
                 </div>
 
                 <!-- إحصاء -->
-                <div class="d-flex gap-2 mb-3" style="border-top:1px solid #f1f5f9;padding-top:10px;">
-                    <div class="text-center" style="flex:1;">
+                <div class="d-flex gap-2 mb-3 stat-split">
+                    <div class="col">
                         <div class="fw-700 text-primary">{{ company.total_cases_count }}</div>
                         <div class="fs-12 text-muted">إجمالي القضايا</div>
                     </div>
-                    <div style="width:1px;background:#e2e8f0;"></div>
-                    <div class="text-center" style="flex:1;">
+                    <div class="stat-divider"></div>
+                    <div class="col">
                         <div class="fw-700 text-success">{{ company.open_cases_count }}</div>
                         <div class="fs-12 text-muted">مفتوحة</div>
                     </div>
-                    <div style="width:1px;background:#e2e8f0;"></div>
-                    <div class="text-center" style="flex:1;">
+                    <div class="stat-divider"></div>
+                    <div class="col">
                         <div class="fw-700 text-muted">{{ company.documents.count }}</div>
                         <div class="fs-12 text-muted">مستندات</div>
                     </div>
@@ -116,8 +114,7 @@
                     </a>
                     {% endif %}
                     {% if user.can_delete %}
-                    <a href="{% url 'company_delete' company.pk %}" class="btn btn-light btn-sm btn-icon" title="حذف"
-                       style="color:var(--danger);">
+                    <a href="{% url 'company_delete' company.pk %}" class="btn btn-light btn-sm btn-icon danger-action" title="حذف">
                         <i class="fas fa-trash"></i>
                     </a>
                     {% endif %}

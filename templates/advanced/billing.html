@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}{{ page.title }}{% endblock %}
+{% block page_title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1><i class="fas {{ page.icon }} text-primary me-2"></i>{{ page.title }}</h1>
+        <div class="breadcrumb mt-1"><a href="{% url 'dashboard' %}">الرئيسية</a><span>/</span><span>{{ page.title }}</span></div>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-6"><div class="metric-tile primary"><div class="value">{{ billing_total }}</div><div class="fs-12 text-muted">إجمالي قيمة الفواتير</div></div></div>
+    <div class="col-md-6"><div class="metric-tile success"><div class="value">{{ billing_paid }}</div><div class="fs-12 text-muted">إجمالي المسدد</div></div></div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header"><h5>إضافة فاتورة</h5></div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="form-group">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors.0 }}</div>{% endif %}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-plus"></i> حفظ الفاتورة</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header"><h5>الفواتير</h5></div>
+            <div class="card-body p-0">
+                <div class="table-wrapper table-clean">
+                    <table class="table">
+                        <thead><tr><th>الرقم</th><th>الشركة</th><th>القضية</th><th>الاستحقاق</th><th>المبلغ</th><th>المتبقي</th><th>الحالة</th></tr></thead>
+                        <tbody>
+                        {% for inv in invoices %}
+                            <tr>
+                                <td>{{ inv.invoice_number }}</td>
+                                <td>{{ inv.company.name }}</td>
+                                <td>{% if inv.case %}{{ inv.case.case_number }}{% else %}—{% endif %}</td>
+                                <td>{{ inv.due_date|date:"d/m/Y" }}</td>
+                                <td>{{ inv.amount }}</td>
+                                <td>{{ inv.balance }}</td>
+                                <td><span class="badge badge-secondary">{{ inv.get_status_display }}</span></td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="7" class="text-muted">لا توجد فواتير حتى الآن.</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

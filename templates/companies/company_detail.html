@@ -26,7 +26,7 @@
         </a>
         {% endif %}
         {% if user.can_delete %}
-        <a href="{% url 'company_delete' company.pk %}" class="btn btn-light" style="color:var(--danger);">
+        <a href="{% url 'company_delete' company.pk %}" class="btn btn-light danger-action">
             <i class="fas fa-trash"></i> حذف
         </a>
         {% endif %}
@@ -87,26 +87,26 @@
             <div class="card-body">
                 <div class="row g-3 text-center">
                     <div class="col-6">
-                        <div style="background:#eff6ff;border-radius:10px;padding:16px;">
-                            <div class="fw-700 text-primary" style="font-size:24px;">{{ company.total_cases_count }}</div>
+                        <div class="metric-tile primary">
+                            <div class="value">{{ company.total_cases_count }}</div>
                             <div class="fs-12 text-muted">إجمالي القضايا</div>
                         </div>
                     </div>
                     <div class="col-6">
-                        <div style="background:#f0fdf4;border-radius:10px;padding:16px;">
-                            <div class="fw-700 text-success" style="font-size:24px;">{{ company.open_cases_count }}</div>
+                        <div class="metric-tile success">
+                            <div class="value">{{ company.open_cases_count }}</div>
                             <div class="fs-12 text-muted">قضايا مفتوحة</div>
                         </div>
                     </div>
                     <div class="col-6">
-                        <div style="background:#fef2f2;border-radius:10px;padding:16px;">
-                            <div class="fw-700 text-danger" style="font-size:24px;">{{ cases|length }}</div>
+                        <div class="metric-tile danger">
+                            <div class="value">{{ cases|length }}</div>
                             <div class="fs-12 text-muted">إجمالي القضايا</div>
                         </div>
                     </div>
                     <div class="col-6">
-                        <div style="background:#f1f5f9;border-radius:10px;padding:16px;">
-                            <div class="fw-700 text-muted" style="font-size:24px;">{{ documents|length }}</div>
+                        <div class="metric-tile muted">
+                            <div class="value">{{ documents|length }}</div>
                             <div class="fs-12 text-muted">المستندات</div>
                         </div>
                     </div>
@@ -130,7 +130,7 @@
             </div>
             {% if cases %}
             <div class="card-body p-0">
-                <div class="table-wrapper" style="border:none;border-radius:0;">
+                <div class="table-wrapper table-clean">
                     <table class="table">
                         <thead>
                             <tr>
@@ -147,7 +147,7 @@
                         {% for case in cases %}
                         <tr class="status-{{ case.status }}">
                             <td>
-                                <a href="{% url 'case_detail' case.pk %}" class="fw-700 text-primary" style="text-decoration:none;">
+                                <a href="{% url 'case_detail' case.pk %}" class="fw-700 link-accent">
                                     {{ case.case_number }}
                                 </a>
                             </td>
@@ -175,7 +175,7 @@
                                     </a>
                                     {% endif %}
                                     {% if user.can_delete %}
-                                    <a href="{% url 'case_delete' case.pk %}" class="btn btn-sm btn-light" style="color:var(--danger);" title="حذف">
+                                    <a href="{% url 'case_delete' case.pk %}" class="btn btn-sm btn-light danger-action" title="حذف">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                     {% endif %}
@@ -188,7 +188,7 @@
                 </div>
             </div>
             {% else %}
-            <div class="empty-state" style="padding:40px;">
+            <div class="empty-state empty-state-lg">
                 <div class="icon"><i class="fas fa-gavel"></i></div>
                 <h5>لا توجد قضايا</h5>
                 <p>لم تُضف أي قضايا لهذه الشركة بعد</p>
@@ -213,7 +213,7 @@
             </div>
             {% if documents %}
             <div class="card-body p-0">
-                <div class="table-wrapper" style="border:none;border-radius:0;">
+                <div class="table-wrapper table-clean">
                     <table class="table">
                         <thead><tr><th>العنوان</th><th>النوع</th><th>الحجم</th><th>رُفع بواسطة</th><th>التاريخ</th><th></th></tr></thead>
                         <tbody>
@@ -248,8 +248,8 @@
                 </div>
             </div>
             {% else %}
-            <div class="empty-state" style="padding:30px;">
-                <div class="icon" style="font-size:36px;"><i class="fas fa-folder-open"></i></div>
+            <div class="empty-state empty-state-sm">
+                <div class="icon empty-icon-lg"><i class="fas fa-folder-open"></i></div>
                 <p>لا توجد مستندات بعد</p>
                 {% if user.can_edit %}
                 <a href="{% url 'document_upload_company' company.pk %}" class="btn btn-outline-primary btn-sm">

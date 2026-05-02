@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}{{ page.title }}{% endblock %}
+{% block page_title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1><i class="fas {{ page.icon }} text-primary me-2"></i>{{ page.title }}</h1>
+        <div class="breadcrumb mt-1">
+            <a href="{% url 'dashboard' %}">الرئيسية</a>
+            <span>/</span><a href="{% url 'advanced_index' %}">الوحدة المتقدمة</a>
+            <span>/</span><span>{{ page.title }}</span>
+        </div>
+    </div>
+    <a href="{% url 'advanced_index' %}" class="btn btn-outline-secondary"><i class="fas fa-arrow-right"></i> رجوع للقائمة</a>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-3"><div class="metric-tile primary"><div class="value">{{ kpi.companies }}</div><div class="fs-12 text-muted">شركات</div></div></div>
+    <div class="col-md-3"><div class="metric-tile success"><div class="value">{{ kpi.open_cases }}</div><div class="fs-12 text-muted">قضايا مفتوحة</div></div></div>
+    <div class="col-md-3"><div class="metric-tile danger"><div class="value">{{ kpi.upcoming_sessions }}</div><div class="fs-12 text-muted">جلسات قادمة</div></div></div>
+    <div class="col-md-3"><div class="metric-tile muted"><div class="value">{{ kpi.docs }}</div><div class="fs-12 text-muted">مستندات</div></div></div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header"><h5>نطاق العمل الحالي</h5></div>
+            <div class="card-body">
+                <p class="mb-3 text-muted">تم تجهيز هذه الصفحة كبنية جاهزة حديثة، ويمكنك الآن ربطها بالبيانات الفعلية وخطوات العمل الداخلية للمكتب.</p>
+                <ul class="smart-list">
+                    <li><div class="smart-row"><strong>المطلوب التالي:</strong> تحديد الحقول الرسمية والسياسات الداخلية.</div></li>
+                    <li><div class="smart-row"><strong>التكامل:</strong> ربط الصفحة بالإشعارات والتقارير والصلاحيات.</div></li>
+                    <li><div class="smart-row"><strong>الأتمتة:</strong> إضافة Workflow وتنبيهات دورية وقوالب جاهزة.</div></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-header"><h5>بيانات حديثة من النظام</h5></div>
+            <div class="card-body p-0">
+                <div class="table-wrapper table-clean">
+                    <table class="table">
+                        <thead><tr><th>القضية</th><th>الشركة</th></tr></thead>
+                        <tbody>
+                        {% for c in recent_cases %}
+                            <tr><td>{{ c.case_number }}</td><td>{{ c.company.name }}</td></tr>
+                        {% empty %}
+                            <tr><td colspan="2" class="text-muted">لا توجد بيانات</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

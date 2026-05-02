@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}{{ page.title }}{% endblock %}
+{% block page_title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1><i class="fas {{ page.icon }} text-primary me-2"></i>{{ page.title }}</h1>
+        <div class="breadcrumb mt-1"><a href="{% url 'dashboard' %}">الرئيسية</a><span>/</span><a href="{% url 'advanced_index' %}">الوحدة المتقدمة</a><span>/</span><span>{{ page.title }}</span></div>
+    </div>
+</div>
+
+{% if page_key == "contracts" %}
+<div class="card">
+    <div class="card-header"><h5>العقود والاتفاقيات</h5></div>
+    <div class="card-body p-0">
+        <div class="table-wrapper table-clean">
+            <table class="table">
+                <thead><tr><th>العنوان</th><th>النوع</th><th>الربط</th><th>التاريخ</th></tr></thead>
+                <tbody>
+                {% for d in contracts_docs %}
+                    <tr>
+                        <td>{{ d.title }}</td>
+                        <td><span class="badge badge-secondary">{{ d.get_file_type_display }}</span></td>
+                        <td>{% if d.case %}قضية {{ d.case.case_number }}{% elif d.company %}{{ d.company.name }}{% else %}عام{% endif %}</td>
+                        <td>{{ d.uploaded_at|date:"d/m/Y" }}</td>
+                    </tr>
+                {% empty %}<tr><td colspan="4" class="text-muted">لا توجد عقود حتى الآن.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% elif page_key == "archive" %}
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card"><div class="card-header"><h5>توزيع الأرشيف</h5></div><div class="card-body">
+            <ul class="smart-list">
+                {% for t in docs_by_type %}
+                <li><div class="smart-row d-flex justify-content-between"><span>{{ t.file_type }}</span><strong>{{ t.total }}</strong></div></li>
+                {% empty %}<li><div class="smart-row">لا توجد بيانات.</div></li>{% endfor %}
+            </ul>
+        </div></div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card"><div class="card-header"><h5>أحدث الملفات</h5></div>
+            <div class="card-body p-0"><div class="table-wrapper table-clean"><table class="table"><thead><tr><th>العنوان</th><th>الربط</th><th>تاريخ الرفع</th></tr></thead><tbody>
+                {% for d in latest_docs %}<tr><td>{{ d.title }}</td><td>{% if d.company %}{{ d.company.name }}{% elif d.case %}{{ d.case.case_number }}{% else %}—{% endif %}</td><td>{{ d.uploaded_at|date:"d/m/Y" }}</td></tr>{% empty %}<tr><td colspan="3" class="text-muted">لا توجد ملفات.</td></tr>{% endfor %}
+            </tbody></table></div></div>
+        </div>
+    </div>
+</div>
+{% elif page_key == "deadlines" %}
+<div class="row g-3">
+    <div class="col-lg-8"><div class="card"><div class="card-header"><h5>المهل والجلسات القادمة</h5></div><div class="card-body p-0"><div class="table-wrapper table-clean"><table class="table"><thead><tr><th>التاريخ</th><th>القضية</th><th>الشركة</th></tr></thead><tbody>
+        {% for s in deadlines %}<tr><td>{{ s.session_date|date:"d/m/Y" }}</td><td>{{ s.case.case_number }}</td><td>{{ s.case.company.name }}</td></tr>{% empty %}<tr><td colspan="3" class="text-muted">لا توجد مهل.</td></tr>{% endfor %}
+    </tbody></table></div></div></div></div>
+    <div class="col-lg-4"><div class="card"><div class="card-header"><h5>فواتير متأخرة</h5></div><div class="card-body"><ul class="smart-list">{% for inv in overdue_invoices %}<li><div class="smart-row">{{ inv.invoice_number }} - {{ inv.company.name }}</div></li>{% empty %}<li><div class="smart-row">لا توجد.</div></li>{% endfor %}</ul></div></div></div>
+</div>
+{% elif page_key == "crm" %}
+<div class="row g-3">
+    <div class="col-md-4"><div class="card"><div class="card-header"><h5>Hot Leads</h5></div><div class="card-body"><ul class="smart-list">{% for c in crm_hot %}<li><div class="smart-row">{{ c.name }}</div></li>{% empty %}<li><div class="smart-row">—</div></li>{% endfor %}</ul></div></div></div>
+    <div class="col-md-4"><div class="card"><div class="card-header"><h5>Warm Leads</h5></div><div class="card-body"><ul class="smart-list">{% for c in crm_warm %}<li><div class="smart-row">{{ c.name }}</div></li>{% empty %}<li><div class="smart-row">—</div></li>{% endfor %}</ul></div></div></div>
+    <div class="col-md-4"><div class="card"><div class="card-header"><h5>Cold Leads</h5></div><div class="card-body"><ul class="smart-list">{% for c in crm_cold %}<li><div class="smart-row">{{ c.name }}</div></li>{% empty %}<li><div class="smart-row">—</div></li>{% endfor %}</ul></div></div></div>
+</div>
+{% elif page_key == "workload" %}
+<div class="card"><div class="card-header"><h5>عبء العمل حسب المحامي</h5></div><div class="card-body p-0"><div class="table-wrapper table-clean"><table class="table"><thead><tr><th>المحامي</th><th>إجمالي القضايا</th><th>المفتوحة</th></tr></thead><tbody>
+{% for l in lawyer_workload %}<tr><td>{{ l.get_full_name|default:l.username }}</td><td>{{ l.total_cases }}</td><td>{{ l.open_cases }}</td></tr>{% empty %}<tr><td colspan="3" class="text-muted">لا يوجد محامون.</td></tr>{% endfor %}
+</tbody></table></div></div></div>
+{% elif page_key == "workflow" %}
+<div class="row g-3">
+    <div class="col-md-4"><div class="card"><div class="card-header"><h5>مفتوحة</h5></div><div class="card-body"><ul class="smart-list">{% for c in open_cases %}<li><div class="smart-row">{{ c.case_number }} - {{ c.company.name }}</div></li>{% empty %}<li><div class="smart-row">—</div></li>{% endfor %}</ul></div></div></div>
+    <div class="col-md-4"><div class="card"><div class="card-header"><h5>مؤجلة</h5></div><div class="card-body"><ul class="smart-list">{% for c in postponed_cases %}<li><div class="smart-row">{{ c.case_number }} - {{ c.company.name }}</div></li>{% empty %}<li><div class="smart-row">—</div></li>{% endfor %}</ul></div></div></div>
+    <div class="col-md-4"><div class="card"><div class="card-header"><h5>مغلقة</h5></div><div class="card-body"><ul class="smart-list">{% for c in closed_cases %}<li><div class="smart-row">{{ c.case_number }} - {{ c.company.name }}</div></li>{% empty %}<li><div class="smart-row">—</div></li>{% endfor %}</ul></div></div></div>
+</div>
+{% elif page_key == "approvals" %}
+<div class="card"><div class="card-header"><h5>طلبات موافقة (قضايا مؤجلة)</h5></div><div class="card-body p-0"><div class="table-wrapper table-clean"><table class="table"><thead><tr><th>القضية</th><th>الشركة</th><th>آخر تحديث</th></tr></thead><tbody>
+{% for c in approval_items %}<tr><td>{{ c.case_number }}</td><td>{{ c.company.name }}</td><td>{{ c.updated_at|date:"d/m/Y" }}</td></tr>{% empty %}<tr><td colspan="3" class="text-muted">لا توجد عناصر.</td></tr>{% endfor %}
+</tbody></table></div></div></div>
+{% elif page_key == "reports" %}
+<div class="row g-3">
+    <div class="col-md-6"><div class="card"><div class="card-header"><h5>توزيع أنواع القضايا</h5></div><div class="card-body"><ul class="smart-list">{% for row in case_types %}<li><div class="smart-row d-flex justify-content-between"><span>{{ row.case_type }}</span><strong>{{ row.total }}</strong></div></li>{% empty %}<li><div class="smart-row">—</div></li>{% endfor %}</ul></div></div></div>
+    <div class="col-md-6"><div class="card"><div class="card-header"><h5>توزيع الحالات</h5></div><div class="card-body"><ul class="smart-list">{% for row in status_breakdown %}<li><div class="smart-row d-flex justify-content-between"><span>{{ row.status }}</span><strong>{{ row.total }}</strong></div></li>{% empty %}<li><div class="smart-row">—</div></li>{% endfor %}</ul></div></div></div>
+</div>
+{% elif page_key == "client-portal" %}
+<div class="card"><div class="card-header"><h5>ملخص شركات البوابة</h5></div><div class="card-body p-0"><div class="table-wrapper table-clean"><table class="table"><thead><tr><th>الشركة</th><th>القضايا</th><th>المستندات</th></tr></thead><tbody>
+{% for c in portal_companies %}<tr><td>{{ c.name }}</td><td>{{ c.total_cases }}</td><td>{{ c.total_docs }}</td></tr>{% empty %}<tr><td colspan="3" class="text-muted">لا توجد بيانات.</td></tr>{% endfor %}
+</tbody></table></div></div></div>
+{% elif page_key == "notifications-hub" %}
+<div class="row g-3">
+    <div class="col-md-6"><div class="card"><div class="card-header"><h5>تنبيهات جلسات</h5></div><div class="card-body"><ul class="smart-list">{% for s in notif_sessions %}<li><div class="smart-row">{{ s.case.case_number }} - {{ s.session_date|date:"d/m/Y" }}</div></li>{% empty %}<li><div class="smart-row">لا يوجد.</div></li>{% endfor %}</ul></div></div></div>
+    <div class="col-md-6"><div class="card"><div class="card-header"><h5>تنبيهات فواتير</h5></div><div class="card-body"><ul class="smart-list">{% for i in notif_invoices %}<li><div class="smart-row">{{ i.invoice_number }} - {{ i.company.name }}</div></li>{% empty %}<li><div class="smart-row">لا يوجد.</div></li>{% endfor %}</ul></div></div></div>
+</div>
+{% elif page_key == "ai-assistant" %}
+<div class="card"><div class="card-header"><h5>ملخصات ذكية</h5></div><div class="card-body"><ul class="smart-list">{% for line in ai_insights %}<li><div class="smart-row">{{ line }}</div></li>{% endfor %}</ul></div></div>
+<div class="card mt-3"><div class="card-header"><h5>قضايا مقترحة للمراجعة</h5></div><div class="card-body p-0"><div class="table-wrapper table-clean"><table class="table"><thead><tr><th>القضية</th><th>الشركة</th><th>الحالة</th></tr></thead><tbody>
+{% for c in ai_recommended_cases %}<tr><td>{{ c.case_number }}</td><td>{{ c.company.name }}</td><td>{{ c.get_status_display }}</td></tr>{% empty %}<tr><td colspan="3" class="text-muted">لا يوجد.</td></tr>{% endfor %}
+</tbody></table></div></div></div>
+{% elif page_key == "audit-trail" %}
+<div class="row g-3">
+    <div class="col-lg-7"><div class="card"><div class="card-header"><h5>سجل المستخدمين</h5></div><div class="card-body p-0"><div class="table-wrapper table-clean"><table class="table"><thead><tr><th>المستخدم</th><th>آخر ظهور</th><th>IP</th></tr></thead><tbody>
+    {% for u in users_activity %}<tr><td>{{ u.username }}</td><td>{% if u.last_seen %}{{ u.last_seen|date:"d/m/Y H:i" }}{% else %}—{% endif %}</td><td>{{ u.last_ip|default:"—" }}</td></tr>{% empty %}<tr><td colspan="3" class="text-muted">لا توجد بيانات.</td></tr>{% endfor %}
+    </tbody></table></div></div></div></div>
+    <div class="col-lg-5"><div class="card"><div class="card-header"><h5>آخر عمليات الملفات</h5></div><div class="card-body"><ul class="smart-list">{% for r in latest_records %}<li><div class="smart-row">{{ r.title }} - {{ r.uploaded_at|date:"d/m/Y" }}</div></li>{% empty %}<li><div class="smart-row">لا يوجد.</div></li>{% endfor %}</ul></div></div></div>
+</div>
+{% elif page_key == "backup-recovery" %}
+<div class="card"><div class="card-header"><h5>حالة النسخ الاحتياطي</h5></div><div class="card-body">
+    <div class="metric-tile muted mb-3"><div class="value">{{ backup_info.db_size_mb }} MB</div><div class="fs-12 text-muted">حجم قاعدة البيانات الحالية</div></div>
+    <div class="note-box">
+        <strong>مسار القاعدة:</strong> {{ backup_info.db_path }}<br>
+        <strong>تاريخ الفحص:</strong> {{ backup_info.generated_at|date:"d/m/Y" }}
+    </div>
+</div></div>
+{% else %}
+<div class="card"><div class="card-body">هذه الصفحة قيد الربط التفصيلي.</div></div>
+{% endif %}
+{% endblock %}

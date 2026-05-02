@@ -169,6 +169,58 @@
     border: 1px solid rgba(124,92,255,.2);
 }
 .search-command form { display: flex; gap: 8px; align-items: center; }
+
+/* Light theme polish for custom dashboard widgets */
+[data-theme="light"] .widget,
+[data-theme="light"] .activity-panel,
+[data-theme="light"] .detail-drawer,
+[data-theme="light"] .search-command {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 12px 28px rgba(0,0,0,.06);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+[data-theme="light"] .widget::before { background: linear-gradient(120deg, rgba(201,165,76,.10), transparent 45%); }
+[data-theme="light"] .widget:hover {
+    border-color: #D1D5DB;
+    box-shadow: 0 16px 34px rgba(0,0,0,.09);
+}
+[data-theme="light"] .widget:nth-child(3n+1) { border-top: 2px solid #C9A54C; }
+[data-theme="light"] .widget:nth-child(3n+2) { border-top: 2px solid #2EC4B6; }
+[data-theme="light"] .widget:nth-child(3n)   { border-top: 2px solid #7C5CFF; }
+[data-theme="light"] .widget-title { color: #111827; }
+[data-theme="light"] .widget h3 { color: #111827; font-weight: 800; }
+[data-theme="light"] .mini-bars span {
+    background: linear-gradient(180deg, #7C5CFF, #2EC4B6);
+    box-shadow: none;
+}
+[data-theme="light"] .ring {
+    background: conic-gradient(#2EC4B6 calc(var(--value) * 1%), #E5E7EB 0);
+}
+[data-theme="light"] .ring::after {
+    background: #FFFFFF;
+    color: #111827;
+    border: 1px solid #E5E7EB;
+}
+[data-theme="light"] .smart-row,
+[data-theme="light"] .timeline-item {
+    background: #F7F5F2;
+    border: 1px solid #E5E7EB;
+}
+[data-theme="light"] .smart-row:hover {
+    border-color: #D1D5DB;
+    box-shadow: 0 8px 20px rgba(0,0,0,.06);
+}
+[data-theme="light"] .smart-row .expand-body { border-top-color: #E5E7EB; color: #4B5563; }
+[data-theme="light"] .timeline::before {
+    background: linear-gradient(180deg, rgba(201,165,76,.45), rgba(124,92,255,.25), transparent);
+}
+[data-theme="light"] .timeline-item::before {
+    background: #C9A54C;
+    box-shadow: 0 0 0 3px rgba(201,165,76,.2);
+}
+[data-theme="light"] .detail-drawer { border-top: 2px solid #C9A54C; }
 @media (max-width: 1200px) {
     .control-center { grid-template-columns: 1fr; }
     .activity-panel { position: static; height: auto; }

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}الوحدة المتقدمة{% endblock %}
+{% block page_title %}الوحدة المتقدمة{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1><i class="fas fa-layer-group text-primary me-2"></i>الوحدة المتقدمة</h1>
+        <div class="breadcrumb mt-1">
+            <a href="{% url 'dashboard' %}">الرئيسية</a>
+            <span>/</span><span>الوحدة المتقدمة</span>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4"><div class="metric-tile primary"><div class="value">{{ kpi.companies }}</div><div class="fs-12 text-muted">إجمالي الشركات</div></div></div>
+    <div class="col-md-4"><div class="metric-tile success"><div class="value">{{ kpi.cases }}</div><div class="fs-12 text-muted">إجمالي القضايا</div></div></div>
+    <div class="col-md-4"><div class="metric-tile muted"><div class="value">{{ kpi.docs }}</div><div class="fs-12 text-muted">إجمالي المستندات</div></div></div>
+</div>
+
+<div class="row g-3">
+    {% for key, p in pages.items %}
+    <div class="col-md-6 col-xl-4">
+        <a href="{% url 'advanced_page' key %}" class="card text-decoration-none h-100 card-lift">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="icon-chip"><i class="fas {{ p.icon }} text-primary"></i></div>
+                <div>
+                    <div class="fw-700 text-dark">{{ p.title }}</div>
+                    <div class="fs-12 text-muted">نسخة تشغيلية أولى جاهزة للربط</div>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}{{ page.title }}{% endblock %}
+{% block page_title %}{{ page.title }}{% endblock %}
+{% block content %}
+<div class="page-header"><h1><i class="fas {{ page.icon }} text-primary me-2"></i>{{ page.title }}</h1></div>
+<div class="row g-3">
+  <div class="col-lg-4">
+    <div class="card"><div class="card-header"><h5>{% if editing %}تعديل عميل محتمل{% else %}إضافة عميل محتمل{% endif %}</h5></div><div class="card-body">
+      {% if can_write %}
+      <form method="post">{% csrf_token %}
+        {% for field in form %}<div class="form-group"><label class="form-label">{{ field.label }}</label>{{ field }}{% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors.0 }}</div>{% endif %}</div>{% endfor %}
+        <button class="btn btn-primary w-100" type="submit">حفظ</button>
+      </form>
+      {% else %}<p class="text-muted">لا تملك صلاحية التعديل.</p>{% endif %}
+    </div></div>
+  </div>
+  <div class="col-lg-8">
+    <div class="card"><div class="card-header"><h5>قائمة العملاء المحتملين</h5></div><div class="card-body p-0"><div class="table-wrapper table-clean"><table class="table">
+      <thead><tr><th>الجهة</th><th>التواصل</th><th>المرحلة</th><th>المسؤول</th><th></th></tr></thead><tbody>
+      {% for l in leads %}
+      <tr>
+        <td>{{ l.company_name }}</td><td>{{ l.phone|default:l.email|default:"—" }}</td><td><span class="badge badge-secondary">{{ l.get_stage_display }}</span></td><td>{{ l.owner|default:"—" }}</td>
+        <td>
+          <a class="btn btn-sm btn-light" href="{% url 'advanced_page' 'crm' %}?edit={{ l.id }}"><i class="fas fa-edit"></i></a>
+          {% if can_write %}<form method="post" class="d-inline">{% csrf_token %}<input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="{{ l.id }}"><button class="btn btn-sm btn-light danger-action"><i class="fas fa-trash"></i></button></form>{% endif %}
+        </td>
+      </tr>
+      {% empty %}<tr><td colspan="5" class="text-muted">لا توجد بيانات.</td></tr>{% endfor %}
+      </tbody></table></div></div></div>
+  </div>
+</div>
+{% endblock %}

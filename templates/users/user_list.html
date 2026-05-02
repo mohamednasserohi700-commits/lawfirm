@@ -21,7 +21,7 @@
     <div class="col-lg-{% if selected_user %}8{% else %}12{% endif %}" id="users-table-col">
     <div class="card">
         <div class="card-body p-0">
-            <div class="table-wrapper" style="border:none;">
+            <div class="table-wrapper table-clean">
                 <table class="table">
                     <thead>
                         <tr>
@@ -37,10 +37,10 @@
                     </thead>
                     <tbody>
                     {% for u in users %}
-                    <tr class="{% if selected_user and selected_user.pk == u.pk %}table-active{% endif %}" style="cursor:pointer" onclick="window.location='{% url 'users:user_permissions' u.pk %}'">
+                    <tr class="{% if selected_user and selected_user.pk == u.pk %}table-active{% endif %} cursor-pointer" onclick="window.location='{% url 'users:user_permissions' u.pk %}'">
                         <td>
                             <div class="d-flex align-items-center gap-2">
-                                <div style="width:36px;height:36px;background:{% if u.role == 'admin' %}#eff6ff{% elif u.role == 'lawyer' %}#f0fdf4{% else %}#fef3c7{% endif %};border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:{% if u.role == 'admin' %}var(--primary){% elif u.role == 'lawyer' %}var(--success){% else %}var(--warning){% endif %};">
+                                <div class="user-avatar {% if u.role == 'admin' %}user-avatar-admin{% elif u.role == 'lawyer' %}user-avatar-lawyer{% else %}user-avatar-employee{% endif %}">
                                     {{ u.get_full_name|first|default:u.username|first|upper }}
                                 </div>
                                 <span class="fw-600">{{ u.get_full_name|default:"—" }}</span>
@@ -56,7 +56,7 @@
                         </td>
                         <td>
                             {% if u.is_active %}
-                                <span class="badge badge-success"><i class="fas fa-circle" style="font-size:7px;"></i> نشط</span>
+                                <span class="badge badge-success"><i class="fas fa-circle online-dot-xs"></i> نشط</span>
                             {% else %}
                                 <span class="badge badge-danger">غير نشط</span>
                             {% endif %}
@@ -97,7 +97,7 @@
         <div class="card-body">
             <!-- معلومات المستخدم -->
             <div class="text-center mb-3">
-                <div style="width:60px;height:60px;background:var(--primary-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.5rem;color:var(--primary);margin:0 auto 8px;">
+                <div class="user-avatar user-avatar-lg">
                     {{ selected_user.get_full_name|first|default:selected_user.username|first|upper }}
                 </div>
                 <div class="fw-600">{{ selected_user.get_full_name|default:selected_user.username }}</div>
@@ -119,7 +119,7 @@
                         {% if perm == 'can_delete_manual' and selected_user.can_delete_manual %}checked{% endif %}
                         {% if perm == 'can_manage_users_manual' and selected_user.can_manage_users_manual %}checked{% endif %}>
                     <label class="form-check-label" for="perm_{{ perm }}">
-                        <i class="fas fa-circle text-success me-1" style="font-size:10px"></i>
+                        <i class="fas fa-circle text-success me-1 online-dot-sm"></i>
                         {{ label }}
                     </label>
                 </div>
